@@ -1,0 +1,32 @@
+top-stack {
+  padding-right: 2rem;
+  padding-left: 2rem;
+  width: 100%;
+}
+
+.heading {
+  font-family: 'Quicksand' sans-serif;
+  font-size: 3rem;
+  align-items: center;
+  justify-self: center;
+}
+
+.add-btn {
+  margin-right: 1rem;
+  margin-left: 2rem;
+}
+
+.table {
+  margin-bottom: 2rem;
+  table-layout: fixed;
+}
+
+@media (max-width: 1024) {
+  .heading {
+    margin-right: 3.5rem;
+  }
+
+  .add-btn {
+    margin-right: 0;
+  }
+}
