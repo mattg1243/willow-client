@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  alignitems: center;
+  justifycontent: center;
+}
+
+.willow-cursive {
+  font-family: 'Pacifico', cursive;
+  color: var(--primary);
+  font-size: clamp(86px, 10vw, 200px);
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.login-text-input {
+  margin: 0.5rem;
+}
+
+.spinner-container {
+  margin: 1.9rem;
+  padding: 1rem;
+}
+
+.register-btn-container {
+  padding-top: 1rem;
+}
+
+.reset-password-btn-text {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #63326e;
+}
