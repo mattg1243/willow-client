@@ -8,14 +8,14 @@ interface IProps {
 }
 
 export default function PaymentInfoInput(props: IProps) {
-  const { fieldLabel, state, stateSetter } = props;
+  const { fieldLabel, stateName, stateSetter } = props;
 
   return (
     <InputGroup style={{ alignItems: 'center' }}>
       <FormLabel style={{ width: '100px' }}>{fieldLabel}</FormLabel>
       <Input
         type="text"
-        value={state}
+        value={stateName}
         onChange={(e) => {
           stateSetter(e.target.value);
         }}
