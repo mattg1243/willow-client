@@ -1,19 +1,30 @@
 .cont {
   margin-top: 5rem;
   margin-bottom: 5rem;
+  padding: 5vw 0 0 0;
+}
+
+.heading-cont {
+  height: 100vh;
+  margin: auto;
+}
+
+.btn {
+  width: 5vw;
+  font-size: clamp(36px, 1vw, 1000px);
 }
 
 .willow-cursive {
   font-family: 'Pacifico', cursive;
   color: var(--primary);
-  font-size: 6rem;
+  font-size: clamp(42px, 10vw, 1000px);
 }
 
 .sub-heading {
   display: block;
   text-align: center;
   max-width: 50%;
-  font-size: 1.5rem;
+  font-size: clamp(36px, 1vw, 1000px);
 }
 
 .images-stack {
@@ -24,16 +35,31 @@
 
 .image-cont {
   width: 100%;
-  height: clamp(325px, 45vh, 450px);
+  height: clamp(325px, 70vh, 550px);
   padding: 2rem;
   margin: 0;
+  justify-content: center;
+}
+
+.sub-section-heading {
+  font-size: clamp(28px, 6vw, 42px);
+  font-weight: bold;
+}
+
+.sub-section-p {
+  width: clamp(250px, 37%, 600px);
+  font-size: clamp(22px, 5vw, 36px);
 }
 
 .image {
-  width: 10%;
+  width: clamp(150px, 10%, 400px);
 }
 
 @media (max-width: 768px) {
+  .heading-cont {
+    margin-top: 10vh;
+  }
+
   .sub-heading {
     max-width: 80%;
   }
@@ -44,6 +70,7 @@
 
   .image-cont {
     width: 100%;
+    height: 100vh;
     margin: 4rem;
   }
 }
