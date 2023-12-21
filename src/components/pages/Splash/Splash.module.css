@@ -10,21 +10,20 @@
 }
 
 .btn {
-  width: 5vw;
   font-size: clamp(36px, 1vw, 1000px);
 }
 
 .willow-cursive {
   font-family: 'Pacifico', cursive;
   color: var(--primary);
-  font-size: clamp(42px, 10vw, 1000px);
+  font-size: clamp(86px, 10vw, 200px);
 }
 
 .sub-heading {
   display: block;
   text-align: center;
   max-width: 50%;
-  font-size: clamp(36px, 1vw, 1000px);
+  font-size: clamp(24px, 2vw, 36px);
 }
 
 .images-stack {

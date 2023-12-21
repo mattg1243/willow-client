@@ -5,7 +5,6 @@ import clock from '../../../assets/clock.png';
 import money from '../../../assets/money.png';
 import bill from '../../../assets/bill.png';
 import styles from './Splash.module.css';
-import { color } from 'framer-motion';
 
 export default function SplashPage() {
   useEffect(() => {
