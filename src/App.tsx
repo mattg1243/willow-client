@@ -23,17 +23,11 @@ function App() {
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/resetpassword/:token/:username' element={<ResetPasswordPage />} />
           {/* All routes below are priveleged and need to be wrapped in a PrivateRoutes component */}
-          <Route path='/profile' element={<ProtectedRoute />}>
-            <ProfilePage />
-          </Route>
-          <Route path='/clients' element={<ProtectedRoute />}>
-            <Dashboard />
-          </Route>
-          <Route path='/client-archive' element={<ProtectedRoute />} >
-            <Dashboard archiveMode={true} />
-          </Route>
-          <Route path='/client/:id' element={<ProtectedRoute />} >
-            <ClientPage />
+          <Route element={<ProtectedRoute />}>
+            <Route path='/profile' element={<ProfilePage />} />
+            <Route path='/clients' element={<Dashboard />} />
+            <Route path='/client/:id' element={<ClientPage />} />
+            <Route path='/client-archive' element={<Dashboard archiveMode />} />
           </Route>
         </Routes>
       </Router>

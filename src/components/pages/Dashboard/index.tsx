@@ -5,5 +5,5 @@ interface IProps {
 export default function Dashboard(props: IProps) {
   const { archiveMode } = props;
   
-  return <h1>Dashboard: archive mode {archiveMode as boolean}</h1>;
+  return <h1>Dashboard {archiveMode ? ' - archive mode' : null}</h1>;
 }
