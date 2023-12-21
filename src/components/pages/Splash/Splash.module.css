@@ -1,0 +1,49 @@
+.cont {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}
+
+.willow-cursive {
+  font-family: 'Pacifico', cursive;
+  color: var(--primary);
+  font-size: 6rem;
+}
+
+.sub-heading {
+  display: block;
+  text-align: center;
+  max-width: 50%;
+  font-size: 1.5rem;
+}
+
+.images-stack {
+  width: 100%;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.image-cont {
+  width: 100%;
+  height: clamp(325px, 45vh, 450px);
+  padding: 2rem;
+  margin: 0;
+}
+
+.image {
+  width: 10%;
+}
+
+@media (max-width: 768px) {
+  .sub-heading {
+    max-width: 80%;
+  }
+
+  .images-stack {
+    width: 100%;
+  }
+
+  .image-cont {
+    width: 100%;
+    margin: 4rem;
+  }
+}
