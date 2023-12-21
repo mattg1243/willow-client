@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { VStack, HStack, Stack, Button } from '@chakra-ui/react';
+import { VStack, HStack, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import clock from '../../../assets/clock.png';
 import money from '../../../assets/money.png';
