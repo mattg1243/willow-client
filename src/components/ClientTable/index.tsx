@@ -24,7 +24,7 @@ import styles from './ClientTable.module.css';
 
 interface IProps {
   archiveMode: boolean;
-  addClientShown?: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  addClientShown?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ClientTable(props: IProps) {
