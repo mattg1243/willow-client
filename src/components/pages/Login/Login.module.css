@@ -1,7 +1,7 @@
 .container {
   display: flex;
-  alignitems: center;
-  justifycontent: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .willow-cursive {
