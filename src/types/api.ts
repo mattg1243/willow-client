@@ -1,0 +1,72 @@
+export type BaseEntity = {
+  id: string;
+  created_at: number;
+  updated_at: number;
+};
+
+export type Entity<T> = {
+  [K in keyof T]: T[K];
+} & BaseEntity;
+
+export type User = Entity<{
+  fname: string;
+  lname: string;
+  email: string;
+  nameForHeader: string;
+  license: string | null | undefined;
+}>;
+
+type PaymentInfo = {
+  zelle: string | null | undefined;
+  paypal: string | null | undefined;
+  venmo: string | null | undefined;
+};
+
+export type UserContactInfo = Entity<{
+  user_id: string;
+  phone: string | null | undefined;
+  city: string | null | undefined;
+  state: string | null | undefined;
+  street: string | null | undefined;
+  zip: string | null | undefined;
+  paymentinfo: PaymentInfo;
+}>;
+
+export type Client = Entity<{
+  user_id: string;
+  fname: string;
+  lname: string | null | undefined;
+  email: string | null | undefined;
+  phone: string | null | undefined;
+  balance: number;
+  balancenotifythreshold: number;
+  rate: number;
+  isarchived: boolean;
+}>;
+
+export type Event = Entity<{
+  user_id: string;
+  client_id: string;
+  date: number;
+  duration: number | null | undefined;
+  event_type_id: string;
+  detail: string | null | undefined;
+  rate: number;
+  amount: number;
+  running_balance: number;
+  paid: boolean;
+}>;
+
+export type EventType = Entity<{
+  user_id: string;
+  source: string;
+  name: string;
+  charge: boolean;
+}>;
+
+export type Payout = Entity<{
+  user_id: string;
+  client_id: string;
+  date: number;
+  amount: number;
+}>;
