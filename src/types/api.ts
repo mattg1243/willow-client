@@ -1,7 +1,7 @@
 export type BaseEntity = {
   id: string;
-  created_at: number;
-  updated_at: number;
+  created_at: string;
+  updated_at: string | null;
 };
 
 export type Entity<T> = {
@@ -12,7 +12,7 @@ export type User = Entity<{
   fname: string;
   lname: string;
   email: string;
-  nameForHeader: string;
+  nameforheader: string;
   license: string | null | undefined;
 }>;
 
@@ -47,7 +47,7 @@ export type Client = Entity<{
 export type Event = Entity<{
   user_id: string;
   client_id: string;
-  date: number;
+  date: string;
   duration: number | null | undefined;
   event_type_id: string;
   detail: string | null | undefined;
@@ -59,7 +59,7 @@ export type Event = Entity<{
 
 export type EventType = Entity<{
   user_id: string;
-  source: string;
+  source: string | null;
   name: string;
   charge: boolean;
 }>;

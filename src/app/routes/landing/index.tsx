@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Landing.module.css";
-import Header from "../../../components/Header";
+import { Header } from "../../../components/Header";
 import { useUser } from "@/lib/auth";
 import { paths } from "@/config/paths";
 
@@ -20,7 +20,7 @@ export function LandingRoute() {
 
   return (
     <div className={styles.cont}>
-      <Header />
+      <Header user={user?.user} />
       <div className={styles.section1}>
         <h1>With us, billing is easy</h1>
         <h3>
