@@ -1,14 +1,10 @@
-import { Card, Container, Input, VStack } from "@chakra-ui/react";
+import { LoginForm } from "@/features/auth/components/LoginForm";
+import { AuthLayout } from "@/components/layout/authLayout";
 
 export function LoginRoute() {
   return (
-    <Container>
-      <VStack>
-        <Card>
-          <Input placeholder="Email" />
-          <Input placeholder="Password" />
-        </Card>
-      </VStack>
-    </Container>
+    <AuthLayout title="Login to your account">
+      <LoginForm />
+    </AuthLayout>
   );
 }

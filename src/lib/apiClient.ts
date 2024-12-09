@@ -22,7 +22,8 @@ api.interceptors.response.use(
     return res.data;
   },
   (err) => {
-    const msg = err.response?.data?.message || err.message;
+    console.log(err);
+    const msg = err.response?.data || err.message;
     toaster.create({
       title: msg || "An unknown error occurred",
       type: "error",

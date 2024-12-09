@@ -5,15 +5,15 @@ import { paths } from "@/config/paths";
 import { type User } from "@/types/api";
 
 import { api } from "./apiClient";
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 export const getUser = async (): Promise<User> => {
-  const res = await api.get("/user");
-  return res.data;
+  return await api.get("/auth/me");
 };
 
 export const logout = async (): Promise<void> => {
-  return api.post("/user/logout");
+  localStorage.removeItem("willowUser");
+  return api.post("/auth/logout");
 };
 
 export const loginInputSchema = z.object({
@@ -24,7 +24,7 @@ export const loginInputSchema = z.object({
 export type LoginInput = z.infer<typeof loginInputSchema>;
 
 export const login = async (data: LoginInput): Promise<void> => {
-  return api.post("/user/login", data);
+  return api.post("/auth/login", data);
 };
 
 export const registerInputSchema = z.object({
@@ -48,7 +48,7 @@ export const registerInputSchema = z.object({
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
 export const register = (data: RegisterInput): Promise<User> => {
-  return api.post("/user", data);
+  return api.post("/auth/register", data);
 };
 
 // User context and reducer
@@ -63,7 +63,10 @@ type UserState = {
   user: User | null;
 };
 
-const initialState = { user: null };
+const initialState = (): UserState => {
+  const storedUser = localStorage.getItem("willowUser");
+  return storedUser ? JSON.parse(storedUser) : { user: null };
+};
 
 type UserAction = { type: "SET_USER"; payload: User } | { type: "CLEAR_USER" };
 
@@ -82,7 +85,11 @@ export const userReducer = (
 };
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(userReducer, initialState);
+  const [state, dispatch] = useReducer(userReducer, initialState());
+
+  useEffect(() => {
+    localStorage.setItem("willowUser", JSON.stringify(state));
+  }, [state]);
 
   return (
     <UserContext.Provider value={{ user: state.user, dispatch }}>

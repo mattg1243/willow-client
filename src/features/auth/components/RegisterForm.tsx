@@ -6,7 +6,7 @@ import { Field } from "@/components/ui/field";
 import { useState } from "react";
 import { paths } from "@/config/paths";
 
-export function RegisterFrom() {
+export function RegisterForm() {
   const [fname, setFname] = useState<string>("");
   const [lname, setLname] = useState<string>("");
   const [email, setEmail] = useState<string>();
@@ -35,7 +35,7 @@ export function RegisterFrom() {
   };
 
   return (
-    <Card.Root width="480px">
+    <Card.Root maxWidth="480px">
       <Card.Body gap="8">
         <Card.Title>Create your account</Card.Title>
         <Field label="First name">

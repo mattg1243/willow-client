@@ -4,7 +4,7 @@ import { useUser } from "@/lib/auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { paths } from "@/config/paths";
 import { Head } from "../seo/Head";
-import Header from "../Header";
+import { Header } from "../Header";
 
 type AuthLayoutProps = {
   title: string;
@@ -21,6 +21,7 @@ export function AuthLayout(props: AuthLayoutProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(user.user);
     if (user?.user) {
       navigate(redirectTo ? redirectTo : paths.app.dashboard.getHref(), {
         replace: true,
@@ -31,8 +32,13 @@ export function AuthLayout(props: AuthLayoutProps) {
   return (
     <>
       <Head title={title} />
-      <Header />
-      <VStack height="100vh" justifyContent="center" alignItems="center">
+      <Header user={user?.user} />
+      <VStack
+        minHeight="90vh"
+        justifyContent="center"
+        alignItems="center"
+        overflow="scroll"
+        padding="24px">
         {children}
       </VStack>
     </>

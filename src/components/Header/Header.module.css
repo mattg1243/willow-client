@@ -1,7 +1,7 @@
 .cont {
-  border-bottom: 0.5px solid black;
   width: 100vw;
-  position: absolute;
+  position: sticky;
+  top: 0;
   z-index: 1;
   height: 75px;
 }
