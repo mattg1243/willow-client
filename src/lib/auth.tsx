@@ -4,7 +4,7 @@ import { z } from "zod";
 import { paths } from "@/config/paths";
 import { type User } from "@/types/api";
 
-import { api } from "./apiClient";
+import { api } from "./api/apiClient";
 import { createContext, useContext, useEffect, useReducer } from "react";
 
 export const getUser = async (): Promise<User> => {
@@ -33,6 +33,7 @@ export const registerInputSchema = z.object({
     password: z.string().min(5, "Required"),
     fname: z.string(),
     lname: z.string(),
+    rate: z.number().optional(),
   }),
   contactInfo: z
     .object({

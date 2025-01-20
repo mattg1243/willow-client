@@ -1,31 +1,23 @@
 import { Client } from "@/types/api";
 import { moneyToStr } from "@/utils/money";
-import {
-  ActionBarContent,
-  Badge,
-  HStack,
-  Kbd,
-  Table,
-  VStack,
-} from "@chakra-ui/react";
+import { Badge, HStack, Table, VStack } from "@chakra-ui/react";
 import {
   PaginationItems,
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon, BookMarked } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  ActionBarRoot,
-  ActionBarSeparator,
-  ActionBarSelectionTrigger,
-} from "@/components/ui/action-bar";
-import { Button } from "@/components/ui/button";
 import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
-import { FilterButton } from "./FilterButton";
-import { env } from "@/config/env";
+import { FilterButton, FilterOptions } from "./FilterButton";
+import { AddClient } from "./AddClient";
+import { ClientTableActionBar } from "./ActionBar";
+import { deleteClients } from "@/lib/api/clients";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/config/paths";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const pageSize = 5;
 
@@ -38,12 +30,18 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [selection, setSelection] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortByOptions>("created_at");
   const [order, setOrder] = useState<SortByOrder>("asc");
-  const [archived, setArchived] = useState<boolean>(false);
+  const [filter, setFilter] = useState<FilterOptions>("Active");
+  const [filteredClients, setFilteredClients] = useState<Client[]>(clients);
 
-  const filteredClients = clients.filter((c) => c.isarchived === archived);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    clients.filter((c) => c.isarchived === archived);
+    const filtered =
+      filter === "All"
+        ? clients
+        : clients.filter((c) => c.isarchived === (filter === "Archived"));
+
     const sortFn = (a: Client, b: Client): number => {
       if (a[sortBy] < b[sortBy]) {
         return -1;
@@ -53,15 +51,31 @@ export function ClientTable({ clients }: ClientTableProps) {
         return 0;
       }
     };
-    filteredClients.sort(sortFn);
-  }, [sortBy, order, archived, clients, filteredClients]);
+    filtered.sort(sortFn);
+    setFilteredClients(filtered);
+    setPage(1);
+  }, [sortBy, order, filter, clients]);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
-  const visibleClients = clients.slice(startRange, endRange);
+  const visibleClients = filteredClients.slice(startRange, endRange);
 
   const hasSelection = selection.length > 0;
+
+  const deleteClientsAction = async () => {
+    if (selection.length > 0) {
+      deleteClients(selection);
+    }
+  };
+
+  const { mutateAsync: deleteClientsMutate } = useMutation({
+    mutationFn: deleteClientsAction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
 
   return (
     <VStack width={"80%"} margin={16}>
@@ -72,7 +86,8 @@ export function ClientTable({ clients }: ClientTableProps) {
           order={order}
           onOrderChange={setOrder}
         />
-        <FilterButton archived={archived} setArchived={setArchived} />
+        <AddClient />
+        <FilterButton filter={filter} setFilter={setFilter} />
       </HStack>
       <Table.Root size="md" variant="outline" interactive striped height={550}>
         <Table.Header>
@@ -88,7 +103,7 @@ export function ClientTable({ clients }: ClientTableProps) {
               <Table.Cell>
                 <Checkbox
                   top="1"
-                  aria-label="Select row"
+                  aria-label="Select client"
                   checked={selection.includes(client.id)}
                   onCheckedChange={(changes) => {
                     setSelection((prev) =>
@@ -100,7 +115,19 @@ export function ClientTable({ clients }: ClientTableProps) {
                 />
               </Table.Cell>
               <Table.Cell>
-                {client.fname} {client.lname}
+                <span
+                  onClick={() => navigate(paths.app.client.getHref(client.id))}>
+                  {client.fname} {client.lname}{" "}
+                  {client.isarchived ? (
+                    <BookMarked
+                      size={12}
+                      style={{
+                        display: "inline",
+                        marginLeft: 6,
+                      }}
+                    />
+                  ) : null}
+                </span>
               </Table.Cell>
               <Table.Cell textAlign="end">
                 {client.balance <= client.balancenotifythreshold ? (
@@ -116,7 +143,7 @@ export function ClientTable({ clients }: ClientTableProps) {
         </Table.Body>
       </Table.Root>
       <PaginationRoot
-        count={clients.length}
+        count={filteredClients.length}
         page={page}
         pageSize={5}
         onPageChange={(e) => setPage(e.page)}>
@@ -126,18 +153,14 @@ export function ClientTable({ clients }: ClientTableProps) {
           <PaginationNextTrigger />
         </HStack>
       </PaginationRoot>
-      <ActionBarRoot open={hasSelection}>
-        <ActionBarContent>
-          <ActionBarSelectionTrigger>
-            {selection.length} selected
-          </ActionBarSelectionTrigger>
-          <ActionBarSeparator />
-          <Button variant="outline">Archive</Button>
-          <Button variant="outline">
-            Delete <Kbd>⌫</Kbd>
-          </Button>
-        </ActionBarContent>
-      </ActionBarRoot>
+      <ClientTableActionBar
+        open={hasSelection}
+        selectionLength={selection.length}
+        onArchive={() => console.log("archiveaction")}
+        onDelete={() => {
+          deleteClientsMutate();
+        }}
+      />
     </VStack>
   );
 }

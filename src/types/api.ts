@@ -14,6 +14,7 @@ export type User = Entity<{
   email: string;
   nameforheader: string;
   license: string | null | undefined;
+  rate: number | null | undefined;
 }>;
 
 type PaymentInfo = {
@@ -50,17 +51,19 @@ export type Event = Entity<{
   date: string;
   duration: number | null | undefined;
   event_type_id: string;
+  event_type_title: string;
   detail: string | null | undefined;
   rate: number;
   amount: number;
   running_balance: number;
   paid: boolean;
+  charge: boolean;
 }>;
 
 export type EventType = Entity<{
   user_id: string;
   source: string | null;
-  name: string;
+  title: string;
   charge: boolean;
 }>;
 

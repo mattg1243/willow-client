@@ -5,10 +5,13 @@ import { HelmetProvider } from "react-helmet-async";
 import { system } from "../theme";
 import { UserProvider } from "@/lib/auth";
 import { ColorModeProvider } from "@/components/ui/color-mode";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 type AppProviderProps = {
   children: React.ReactNode;
 };
+
+const queryClient = new QueryClient();
 
 export const AppProvider = ({ children }: AppProviderProps) => {
   return (
@@ -21,8 +24,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       <HelmetProvider>
         <ChakraProvider value={system}>
           <ColorModeProvider>
-            <Toaster />
-            <UserProvider>{children}</UserProvider>
+            <QueryClientProvider client={queryClient}>
+              <Toaster />
+              <UserProvider>{children}</UserProvider>
+            </QueryClientProvider>
           </ColorModeProvider>
         </ChakraProvider>
       </HelmetProvider>

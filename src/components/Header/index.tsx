@@ -21,7 +21,7 @@ export function Header({ user }: HeaderProps) {
         style={{
           margin: 0,
           padding: "16px",
-          paddingTop: "36px"
+          paddingTop: "36px",
         }}>
         <WLogo />
         <HStack>

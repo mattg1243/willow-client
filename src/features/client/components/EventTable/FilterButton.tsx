@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { FilterIcon } from "lucide-react";
 import { VStack } from "@chakra-ui/react";
 
-export type FilterOptions = "Active" | "Archived" | "All";
+export type FilterOptions = "Charge" | "Payment" | "All";
 
 export type FilterButtonProps = {
   filter: FilterOptions;
@@ -31,8 +31,8 @@ export function FilterButton({ filter, setFilter }: FilterButtonProps) {
             <MenuRadioItemGroup
               value={filter}
               onValueChange={(e) => setFilter(e.value as FilterOptions)}>
-              <MenuRadioItem value="Active">Active</MenuRadioItem>
-              <MenuRadioItem value="Archived">Archived</MenuRadioItem>
+              <MenuRadioItem value="Charge">Charge</MenuRadioItem>
+              <MenuRadioItem value="Payment">Payment</MenuRadioItem>
               <MenuRadioItem value="All">All</MenuRadioItem>
             </MenuRadioItemGroup>
           </MenuContent>

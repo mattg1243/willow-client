@@ -1,5 +1,5 @@
 import { toaster } from "@/components/ui/toaster";
-import { RegisterInput } from "@/lib/auth";
+import { register, RegisterInput } from "@/lib/auth";
 import { Card, Input, Link, Text, VStack } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -9,6 +9,7 @@ import { paths } from "@/config/paths";
 export function RegisterForm() {
   const [fname, setFname] = useState<string>("");
   const [lname, setLname] = useState<string>("");
+  const [rate, setRate] = useState<number>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [confirmPassword, setConfirmPassword] = useState<string>();
@@ -24,10 +25,21 @@ export function RegisterForm() {
         user: {
           fname,
           lname,
+          rate,
           email,
           password,
         },
       };
+      try {
+        await register(data);
+      } catch (err: any) {
+        console.error(err);
+        toaster.create({
+          title:
+            "An error occurred creating your account: " + err?.message || err,
+          type: "error",
+        });
+      }
     } else {
       toaster.create({ title: "Your passwords must match", type: "error" });
     }
@@ -51,6 +63,11 @@ export function RegisterForm() {
             onChange={(v) => setLname(v)}
             value={lname}
           />
+        </Field>
+        <Field
+          label="Pay rate"
+          helperText="Your hourly rate, used to calculate event charges.">
+          <Input placeholder="$100" onChange={(v) => setRate(v)} value={rate} />
         </Field>
         <Field
           label="Email"

@@ -1,7 +1,7 @@
-import Axios, { InternalAxiosRequestConfig } from "axios";
-import { env } from "@/config/env";
 import { toaster } from "@/components/ui/toaster";
+import { env } from "@/config/env";
 import { paths } from "@/config/paths";
+import Axios, { InternalAxiosRequestConfig } from "axios";
 
 function authRequestInterceptor(config: InternalAxiosRequestConfig) {
   if (config.headers) {
@@ -30,6 +30,7 @@ api.interceptors.response.use(
     });
 
     if (err.response?.status === 401) {
+      localStorage.removeItem("willowUser");
       const searchParams = new URLSearchParams();
       const redirectTo =
         searchParams.get("redirectTo") || window.location.pathname;

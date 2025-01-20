@@ -30,8 +30,8 @@ export const paths = {
       getHref: () => "/app",
     },
     client: {
-      path: "client/:clientId",
-      getHref: (id: string) => `app/client/${id}`,
+      path: "/app/client/:clientId",
+      getHref: (id: string) => `/app/client/${id}`,
     },
   },
 } as const;

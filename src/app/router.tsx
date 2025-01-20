@@ -5,6 +5,7 @@ import { LandingRoute } from "./routes/landing";
 import { LoginRoute } from "./routes/auth/Login";
 import { RegisterRoute } from "./routes/auth/Register";
 import { DashboardRoute } from "./routes/app/Dashboard";
+import { ClientRoute } from "./routes/app/Client";
 
 const createAppRouter = () =>
   createBrowserRouter([
@@ -23,6 +24,10 @@ const createAppRouter = () =>
     {
       path: paths.app.dashboard.getHref(),
       element: <DashboardRoute />,
+    },
+    {
+      path: paths.app.client.path,
+      element: <ClientRoute />,
     },
   ]);
 
