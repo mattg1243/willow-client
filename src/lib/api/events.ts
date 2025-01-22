@@ -1,3 +1,4 @@
+import { Event } from "@/types/api";
 import { z } from "zod";
 import { api } from "./apiClient";
 

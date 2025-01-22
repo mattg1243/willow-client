@@ -43,14 +43,27 @@ export function ClientTable({ clients }: ClientTableProps) {
         : clients.filter((c) => c.isarchived === (filter === "Archived"));
 
     const sortFn = (a: Client, b: Client): number => {
-      if (a[sortBy] < b[sortBy]) {
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
+
+      // Handle undefined/null cases
+      if (aValue == null && bValue == null) {
+        return 0;
+      } else if (aValue == null) {
         return -1;
-      } else if (a[sortBy] > b[sortBy]) {
+      } else if (bValue == null) {
+        return 1;
+      }
+
+      if (aValue < bValue) {
+        return -1;
+      } else if (aValue > bValue) {
         return 1;
       } else {
         return 0;
       }
     };
+    
     filtered.sort(sortFn);
     setFilteredClients(filtered);
     setPage(1);
@@ -156,8 +169,8 @@ export function ClientTable({ clients }: ClientTableProps) {
       <ClientTableActionBar
         open={hasSelection}
         selectionLength={selection.length}
-        onArchive={() => console.log("archiveaction")}
-        onDelete={() => {
+        onArchive={async () => console.log("archiveaction")}
+        onDelete={async () => {
           deleteClientsMutate();
         }}
       />

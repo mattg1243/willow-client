@@ -28,7 +28,6 @@ import { InputGroup } from "@/components/ui/input-group";
 import { DollarSign, PlusIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createEvent } from "@/lib/api/events";
-import { EventType } from "@/types/api";
 import { getEventTypes } from "@/lib/api/eventTypes";
 
 export function AddEvent({ clientId }: { clientId: string }) {
@@ -40,7 +39,6 @@ export function AddEvent({ clientId }: { clientId: string }) {
     useState<ListCollection<{ label: string; value: string }>>();
   const [rate, setRate] = useState<number>(0);
   const [amount, setAmount] = useState<number>();
-  const [missingFields, setMissingFields] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
@@ -145,7 +143,7 @@ export function AddEvent({ clientId }: { clientId: string }) {
         </DialogHeader>
         <DialogBody spaceY={8} alignItems="center">
           <SelectRoot
-            collection={userEventTypes}
+            collection={userEventTypes as ListCollection}
             multiple={false}
             onValueChange={(e) => {
               console.log(e.value[0]);
@@ -201,7 +199,7 @@ export function AddEvent({ clientId }: { clientId: string }) {
                 disabled={!isPayment()}
                 value={
                   isPayment()
-                    ? amount / 100
+                    ? (amount as number) / 100
                     : ((rate / 100) * duration).toFixed(2)
                 }
                 onChange={(e) => setAmount(parseFloat(e.target.value) * 100)}

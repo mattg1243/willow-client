@@ -49,7 +49,7 @@ export type Event = Entity<{
   user_id: string;
   client_id: string;
   date: string;
-  duration: number | null | undefined;
+  duration: number;
   event_type_id: string;
   event_type_title: string;
   detail: string | null | undefined;

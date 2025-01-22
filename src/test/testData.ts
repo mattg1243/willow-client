@@ -9,6 +9,7 @@ export const testUser: User = {
   license: "MF 416",
   created_at: "2024-10-21T12:04:22.120231Z",
   updated_at: "2024-10-21T12:04:30.093619Z",
+  rate: 100,
 };
 
 export const testClient: Client = {

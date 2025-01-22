@@ -2,7 +2,7 @@ import React from "react";
 import { useUser } from "@/lib/auth";
 import { Head } from "../seo/Head";
 import { Header } from "../Header";
-import { Text, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 
 type ClientLayoutProps = {
   title: string;

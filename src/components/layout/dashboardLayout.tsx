@@ -1,8 +1,8 @@
 import { useUser } from "@/lib/auth";
+import { VStack } from "@chakra-ui/react";
 import React from "react";
-import { Head } from "../seo/Head";
 import { Header } from "../Header";
-import { Text, VStack } from "@chakra-ui/react";
+import { Head } from "../seo/Head";
 
 type DashboardLayoutProps = {
   title: string;

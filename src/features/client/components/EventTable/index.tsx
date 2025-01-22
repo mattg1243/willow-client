@@ -1,5 +1,3 @@
-import { Event } from "@/types/api";
-import { HStack, Table, VStack } from "@chakra-ui/react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   PaginationItems,
@@ -7,21 +5,23 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination";
-import { useEffect, useState } from "react";
-import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
-import { FilterButton, FilterOptions } from "./FilterButton";
 import { deleteEvents } from "@/lib/api/events";
+import { type Event } from "@/types/api";
+import { HStack, Spinner, Table, VStack } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { moneyToStr } from "../../../../utils/money";
-import { AddEvent } from "./AddEvent";
-import { UpdateEvent } from "./UpdateEvent";
 import { EventsTableActionBar } from "./ActionBar";
+import { AddEvent } from "./AddEvent";
+import { FilterButton, FilterOptions } from "./FilterButton";
+import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
+import { UpdateEvent } from "./UpdateEvent";
 
 const pageSize = 5;
 
 export type EventsTableProps = {
   clientId: string;
-  events?: Event[];
+  events: Event[];
   loading: boolean;
 };
 
@@ -79,6 +79,10 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
       queryClient.invalidateQueries({ queryKey: ["client", clientId] });
     },
   });
+
+  if (loading) {
+    return <Spinner size={"xl"} color={"colors.primary.500"} />;
+  }
 
   return (
     <>
@@ -156,7 +160,8 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
         <EventsTableActionBar
           open={hasSelection}
           selectionLength={selection.length}
-          onDelete={() => {
+          clientId={clientId}
+          onDelete={async () => {
             deleteEventsMutation();
           }}
         />

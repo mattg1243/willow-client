@@ -6,12 +6,12 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["./src/*"]
     },
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -25,5 +25,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/stories", "**/*.stories.tsx"]
 }

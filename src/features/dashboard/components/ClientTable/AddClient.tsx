@@ -130,6 +130,14 @@ export function AddClient() {
           <Field label="Phone number">
             <Input onChange={(e) => setPhone(e.target.value)} type="tel" />
           </Field>
+          <Field label="Low balance threshold">
+            <Input
+              onChange={(e) =>
+                setBalanceNotifyThreshold(parseInt(e.target.value) * 100)
+              }
+              type="number"
+            />
+          </Field>
         </DialogBody>
         <DialogFooter>
           <DialogActionTrigger asChild>

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   MenuContent,
   MenuRadioItem,
@@ -71,7 +70,7 @@ export function SortButton({
             <MenuSeparator />
             <MenuRadioItemGroup
               value={order}
-              onValueChange={(e) => onOrderChange(e.value as SortByOptions)}>
+              onValueChange={(e) => onOrderChange(e.value as SortByOrder)}>
               <MenuRadioItem value="asc">Ascending</MenuRadioItem>
               <MenuRadioItem value="desc">Descending</MenuRadioItem>
             </MenuRadioItemGroup>

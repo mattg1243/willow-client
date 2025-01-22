@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
-import {
-  createListCollection,
-  Icon,
-  IconButton,
-  ListCollection,
-  Switch,
-} from "@chakra-ui/react";
+import { createListCollection, Icon, ListCollection } from "@chakra-ui/react";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -33,8 +27,7 @@ import { Input } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { DollarSign, Edit } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createEvent, updateEvent } from "@/lib/api/events";
-import { EventType } from "@/types/api";
+import { updateEvent, UpdateEventInput } from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
 import { type Event } from "@/types/api";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -50,7 +43,6 @@ export function UpdateEvent({
   const [eventState, setEventState] = useState<Event>(event);
   const [userEventTypes, setUserEventTypes] =
     useState<ListCollection<{ label: string; value: string }>>();
-  const [missingFields, setMissingFields] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
@@ -90,7 +82,7 @@ export function UpdateEvent({
             ? eventState.amount
             : ((eventState.rate * eventState.duration) as number),
         },
-      });
+      } as UpdateEventInput);
       toaster.create({
         type: "success",
         title: "Event upadated successfully.",
@@ -129,7 +121,7 @@ export function UpdateEvent({
         </DialogHeader>
         <DialogBody spaceY={8} alignItems="center">
           <SelectRoot
-            collection={userEventTypes}
+            collection={userEventTypes as ListCollection}
             multiple={false}
             value={[eventState.event_type_id]}
             onValueChange={(e) => {

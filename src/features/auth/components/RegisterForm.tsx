@@ -1,10 +1,10 @@
-import { toaster } from "@/components/ui/toaster";
-import { register, RegisterInput } from "@/lib/auth";
-import { Card, Input, Link, Text, VStack } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
-import { useState } from "react";
+import { toaster } from "@/components/ui/toaster";
 import { paths } from "@/config/paths";
+import { register, RegisterInput } from "@/lib/auth";
+import { Card, Input, Link, Text, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 
 export function RegisterForm() {
   const [fname, setFname] = useState<string>("");
@@ -53,31 +53,41 @@ export function RegisterForm() {
         <Field label="First name">
           <Input
             placeholder="Enter your first name"
-            onChange={(v) => setFname(v)}
+            onChange={(e) => setFname(e.target.value)}
             value={fname}
           />
         </Field>
         <Field label="Last name">
           <Input
             placeholder="Last name"
-            onChange={(v) => setLname(v)}
+            onChange={(e) => setLname(e.target.value)}
             value={lname}
           />
         </Field>
         <Field
           label="Pay rate"
           helperText="Your hourly rate, used to calculate event charges.">
-          <Input placeholder="$100" onChange={(v) => setRate(v)} value={rate} />
+          <Input
+            placeholder="$100"
+            onChange={(e) => setRate(parseInt(e.target.value) * 100)}
+            value={rate}
+          />
         </Field>
         <Field
           label="Email"
           required
           helperText="We'll never share your email"
           errorText="Your email is required to create an account">
-          <Input placeholder="Email" onChange={(v) => setEmail(v)} />
+          <Input
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </Field>
         <Field label="Password" required errorText="A password is required">
-          <Input placeholder="Password" onChange={(v) => setPassword(v)} />
+          <Input
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Field>
         <Field
           label="Confirm password"
@@ -85,7 +95,7 @@ export function RegisterForm() {
           errorText="Please confirm your password">
           <Input
             placeholder="Confirm your password"
-            onChange={(v) => setConfirmPassword(v)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Field>
       </Card.Body>

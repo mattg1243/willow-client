@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ActionBarContent, Input, Kbd } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export type EventTableActionBarProps = {
   open: boolean;
@@ -29,7 +28,6 @@ export function EventsTableActionBar({
   open,
   selectionLength,
   onDelete,
-  clientId,
 }: EventTableActionBarProps) {
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [deleteModalInput, setDeleteModalInput] = useState<string>("");

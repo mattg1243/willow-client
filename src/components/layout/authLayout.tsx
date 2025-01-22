@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { VStack } from "@chakra-ui/react";
-import { useUser } from "@/lib/auth";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Head } from "@/components/seo/Head";
 import { paths } from "@/config/paths";
-import { Head } from "../seo/Head";
-import { Header } from "../Header";
+import { useUser } from "@/lib/auth";
+import { VStack } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type AuthLayoutProps = {
   title: string;
@@ -21,7 +21,6 @@ export function AuthLayout(props: AuthLayoutProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(user.user);
     if (user?.user) {
       navigate(redirectTo ? redirectTo : paths.app.dashboard.getHref(), {
         replace: true,

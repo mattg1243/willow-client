@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { getUser, login, LoginInput, useUser } from "@/lib/auth";
 import { paths } from "@/config/paths";
-import { useNavigation } from "react-router-dom";
 
 export function LoginForm() {
   const [email, setEmail] = useState<string>();
