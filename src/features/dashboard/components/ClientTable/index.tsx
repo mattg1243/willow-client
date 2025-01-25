@@ -32,60 +32,66 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [sortBy, setSortBy] = useState<SortByOptions>("created_at");
   const [order, setOrder] = useState<SortByOrder>("asc");
   const [filter, setFilter] = useState<FilterOptions>("Active");
-  const [filteredClients, setFilteredClients] = useState<Client[]>(clients);
+  const [filteredClients, setFilteredClients] = useState<Client[]>(
+    clients ?? []
+  );
   const [searchTerm, setSearchTerm] = useState<string>();
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    let filtered =
-      filter === "All"
-        ? clients
-        : clients.filter((c) => c.isarchived === (filter === "Archived"));
+    if (clients) {
+      let filtered =
+        filter === "All"
+          ? clients
+          : clients.filter((c) => c.isarchived === (filter === "Archived"));
 
-    const sortFn = (a: Client, b: Client): number => {
-      const aValue = a[sortBy];
-      const bValue = b[sortBy];
+      const sortFn = (a: Client, b: Client): number => {
+        const aValue = a[sortBy];
+        const bValue = b[sortBy];
 
-      // Handle undefined/null cases
-      if (aValue == null && bValue == null) {
-        return 0;
-      } else if (aValue == null) {
-        return -1;
-      } else if (bValue == null) {
-        return 1;
+        // Handle undefined/null cases
+        if (aValue == null && bValue == null) {
+          return 0;
+        } else if (aValue == null) {
+          return -1;
+        } else if (bValue == null) {
+          return 1;
+        }
+
+        if (aValue < bValue) {
+          return -1;
+        } else if (aValue > bValue) {
+          return 1;
+        } else {
+          return 0;
+        }
+      };
+
+      if (searchTerm) {
+        const terms = searchTerm.toLowerCase().split(" ");
+        filtered = filtered.filter((client) => {
+          return terms.every((term) =>
+            Object.values(client).some(
+              (val) => val && String(val).toLowerCase().includes(term)
+            )
+          );
+        });
       }
 
-      if (aValue < bValue) {
-        return -1;
-      } else if (aValue > bValue) {
-        return 1;
-      } else {
-        return 0;
-      }
-    };
-
-    if (searchTerm) {
-      const terms = searchTerm.toLowerCase().split(" ");
-      filtered = filtered.filter((client) => {
-        return terms.every((term) =>
-          Object.values(client).some(
-            (val) => val && String(val).toLowerCase().includes(term)
-          )
-        );
-      });
+      filtered.sort(sortFn);
+      setFilteredClients(filtered);
+      setPage(1);
     }
-
-    filtered.sort(sortFn);
-    setFilteredClients(filtered);
-    setPage(1);
   }, [sortBy, order, filter, clients, searchTerm]);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
-  const visibleClients = filteredClients.slice(startRange, endRange);
+  const visibleClients = clients
+    ? filteredClients.slice(startRange, endRange)
+    : [];
 
   const hasSelection = selection.length > 0;
 
@@ -149,48 +155,54 @@ export function ClientTable({ clients }: ClientTableProps) {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {visibleClients.map((client) => (
-            <Table.Row key={client.id} height={100}>
-              <Table.Cell>
-                <Checkbox
-                  top="1"
-                  aria-label="Select client"
-                  checked={selection.includes(client.id)}
-                  onCheckedChange={(changes) => {
-                    setSelection((prev) =>
-                      changes.checked
-                        ? [...prev, client.id]
-                        : selection.filter((clientId) => clientId !== client.id)
-                    );
-                  }}
-                />
-              </Table.Cell>
-              <Table.Cell width={200}>
-                <span
-                  onClick={() => navigate(paths.app.client.getHref(client.id))}>
-                  {client.fname} {client.lname}{" "}
-                  {client.isarchived ? (
-                    <BookMarked
-                      size={12}
-                      style={{
-                        display: "inline",
-                        marginLeft: 6,
+          {visibleClients.length < 1
+            ? null
+            : visibleClients.map((client) => (
+                <Table.Row key={client.id} height={100}>
+                  <Table.Cell>
+                    <Checkbox
+                      top="1"
+                      aria-label="Select client"
+                      checked={selection.includes(client.id)}
+                      onCheckedChange={(changes) => {
+                        setSelection((prev) =>
+                          changes.checked
+                            ? [...prev, client.id]
+                            : selection.filter(
+                                (clientId) => clientId !== client.id
+                              )
+                        );
                       }}
                     />
-                  ) : null}
-                </span>
-              </Table.Cell>
-              <Table.Cell textAlign="end">
-                {client.balance <= client.balancenotifythreshold ? (
-                  <Badge variant="solid" bg="error.500" marginX={6}>
-                    <AlertCircleIcon size={12} />
-                    Low
-                  </Badge>
-                ) : null}
-                {moneyToStr(client.balance)}
-              </Table.Cell>
-            </Table.Row>
-          ))}
+                  </Table.Cell>
+                  <Table.Cell width={200}>
+                    <span
+                      onClick={() =>
+                        navigate(paths.app.client.getHref(client.id))
+                      }>
+                      {client.fname} {client.lname}{" "}
+                      {client.isarchived ? (
+                        <BookMarked
+                          size={12}
+                          style={{
+                            display: "inline",
+                            marginLeft: 6,
+                          }}
+                        />
+                      ) : null}
+                    </span>
+                  </Table.Cell>
+                  <Table.Cell textAlign="end">
+                    {client.balance <= client.balancenotifythreshold ? (
+                      <Badge variant="solid" bg="error.500" marginX={6}>
+                        <AlertCircleIcon size={12} />
+                        Low
+                      </Badge>
+                    ) : null}
+                    {moneyToStr(client.balance)}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
           {
             // render empty rows to keep table height consistent
             visibleClients.length < pageSize && <Table.Row></Table.Row>
