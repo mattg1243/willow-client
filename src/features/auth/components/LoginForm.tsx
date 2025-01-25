@@ -1,9 +1,10 @@
-import { Card, Input, VStack, Link, Text } from "@chakra-ui/react";
-import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { getUser, login, LoginInput, useUser } from "@/lib/auth";
+import { Field } from "@/components/ui/field";
+import { PasswordInput } from "@/components/ui/password-input";
 import { paths } from "@/config/paths";
+import { getUser, login, LoginInput, useUser } from "@/lib/auth";
+import { Card, Input, Link, Text, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 
 export function LoginForm() {
   const [email, setEmail] = useState<string>();
@@ -56,9 +57,8 @@ export function LoginForm() {
           label="Password"
           required
           errorText="A password is required to login">
-          <Input
+          <PasswordInput
             placeholder="Password"
-            type="password"
             onChange={(v) => setPassword(v.target.value)}
           />
         </Field>

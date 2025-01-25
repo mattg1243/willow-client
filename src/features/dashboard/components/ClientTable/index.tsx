@@ -1,23 +1,24 @@
-import { Client } from "@/types/api";
-import { moneyToStr } from "@/utils/money";
-import { Badge, HStack, Table, VStack } from "@chakra-ui/react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { InputGroup } from "@/components/ui/input-group";
 import {
   PaginationItems,
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination";
-import { AlertCircleIcon, BookMarked } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
-import { FilterButton, FilterOptions } from "./FilterButton";
-import { AddClient } from "./AddClient";
-import { ClientTableActionBar } from "./ActionBar";
-import { deleteClients } from "@/lib/api/clients";
-import { useNavigate } from "react-router-dom";
 import { paths } from "@/config/paths";
+import { deleteClients } from "@/lib/api/clients";
+import { Client } from "@/types/api";
+import { moneyToStr } from "@/utils/money";
+import { Badge, HStack, Input, Table, VStack } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertCircleIcon, BookMarked, SearchIcon, XIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ClientTableActionBar } from "./ActionBar";
+import { AddClient } from "./AddClient";
+import { FilterButton, FilterOptions } from "./FilterButton";
+import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
 
 const pageSize = 5;
 
@@ -32,12 +33,13 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [order, setOrder] = useState<SortByOrder>("asc");
   const [filter, setFilter] = useState<FilterOptions>("Active");
   const [filteredClients, setFilteredClients] = useState<Client[]>(clients);
+  const [searchTerm, setSearchTerm] = useState<string>();
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const filtered =
+    let filtered =
       filter === "All"
         ? clients
         : clients.filter((c) => c.isarchived === (filter === "Archived"));
@@ -63,11 +65,22 @@ export function ClientTable({ clients }: ClientTableProps) {
         return 0;
       }
     };
-    
+
+    if (searchTerm) {
+      const terms = searchTerm.toLowerCase().split(" ");
+      filtered = filtered.filter((client) => {
+        return terms.every((term) =>
+          Object.values(client).some(
+            (val) => val && String(val).toLowerCase().includes(term)
+          )
+        );
+      });
+    }
+
     filtered.sort(sortFn);
     setFilteredClients(filtered);
     setPage(1);
-  }, [sortBy, order, filter, clients]);
+  }, [sortBy, order, filter, clients, searchTerm]);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
@@ -92,7 +105,11 @@ export function ClientTable({ clients }: ClientTableProps) {
 
   return (
     <VStack width={"80%"} margin={16}>
-      <HStack justifyContent="space-between" width="100%">
+      <HStack
+        justifyContent="space-between"
+        alignItems="end"
+        width="100%"
+        maxWidth={1200}>
         <SortButton
           sortBy={sortBy}
           onSortByChange={setSortBy}
@@ -100,13 +117,34 @@ export function ClientTable({ clients }: ClientTableProps) {
           onOrderChange={setOrder}
         />
         <AddClient />
+        <InputGroup
+          startElement={<SearchIcon size={16} />}
+          endElement={
+            searchTerm ? (
+              <XIcon size={16} onClick={() => setSearchTerm("")} />
+            ) : null
+          }>
+          <Input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            width="100%"
+          />
+        </InputGroup>
         <FilterButton filter={filter} setFilter={setFilter} />
       </HStack>
-      <Table.Root size="md" variant="outline" interactive striped height={550}>
+      <Table.Root
+        size="md"
+        variant="outline"
+        tableLayout="auto"
+        interactive
+        height={550}
+        maxWidth={1200}>
         <Table.Header>
           <Table.Row height={50}>
             <Table.ColumnHeader>Edit</Table.ColumnHeader>
-            <Table.ColumnHeader>Client</Table.ColumnHeader>
+            <Table.ColumnHeader textAlign="start" width={200}>
+              Client
+            </Table.ColumnHeader>
             <Table.ColumnHeader textAlign="end">Balance</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -127,7 +165,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                   }}
                 />
               </Table.Cell>
-              <Table.Cell>
+              <Table.Cell width={200}>
                 <span
                   onClick={() => navigate(paths.app.client.getHref(client.id))}>
                   {client.fname} {client.lname}{" "}
@@ -153,6 +191,10 @@ export function ClientTable({ clients }: ClientTableProps) {
               </Table.Cell>
             </Table.Row>
           ))}
+          {
+            // render empty rows to keep table height consistent
+            visibleClients.length < pageSize && <Table.Row></Table.Row>
+          }
         </Table.Body>
       </Table.Root>
       <PaginationRoot

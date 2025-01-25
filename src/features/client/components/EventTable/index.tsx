@@ -116,7 +116,7 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
           <Table.Body>
             {events
               ? visibleEvents.map((event) => (
-                  <Table.Row key={event.id} height={50}>
+                  <Table.Row key={event.id} height={100}>
                     <Table.Cell>
                       <Checkbox
                         top="1"
@@ -144,6 +144,10 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
                   </Table.Row>
                 ))
               : null}
+            {
+              // render empty rows to keep table height consistent
+              visibleEvents.length < pageSize && <Table.Row></Table.Row>
+            }
           </Table.Body>
         </Table.Root>
         <PaginationRoot

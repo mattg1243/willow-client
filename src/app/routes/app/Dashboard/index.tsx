@@ -1,7 +1,9 @@
 import { DashboardLayout } from "@/components/layout/dashboardLayout";
 import { ClientTable } from "@/features/dashboard/components/ClientTable";
 import { api } from "@/lib/api/apiClient";
+import { ProtectedRoute } from "@/lib/auth";
 import { Client } from "@/types/api";
+import { VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 export function DashboardRoute() {
@@ -15,8 +17,13 @@ export function DashboardRoute() {
   });
 
   return (
-    <DashboardLayout title="Dashboard | Willow">
-      <ClientTable clients={clients || []}></ClientTable>
-    </DashboardLayout>
+    <ProtectedRoute>
+      <DashboardLayout title="Dashboard | Willow">
+        <VStack spaceY={8}>
+          <h1>Clients</h1>
+          <ClientTable clients={clients || []}></ClientTable>
+        </VStack>
+      </DashboardLayout>
+    </ProtectedRoute>
   );
 }

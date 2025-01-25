@@ -1,4 +1,3 @@
-import { useUser } from "@/lib/auth";
 import { VStack } from "@chakra-ui/react";
 import React from "react";
 import { Header } from "../Header";
@@ -12,12 +11,10 @@ type DashboardLayoutProps = {
 export function DashboardLayout(props: DashboardLayoutProps) {
   const { title, children } = props;
 
-  const user = useUser();
-
   return (
     <>
       <Head title={title} />
-      <Header user={user?.user} />
+      <Header />
       <VStack width="100vw">{children}</VStack>
     </>
   );

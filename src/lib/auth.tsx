@@ -4,8 +4,8 @@ import { z } from "zod";
 import { paths } from "@/config/paths";
 import { type User } from "@/types/api";
 
-import { api } from "./api/apiClient";
 import { createContext, useContext, useEffect, useReducer } from "react";
+import { api } from "./api/apiClient";
 
 export const getUser = async (): Promise<User> => {
   return await api.get("/auth/me");
@@ -56,9 +56,16 @@ export const register = (data: RegisterInput): Promise<User> => {
 export const UserContext = createContext<{
   user: User | null;
   dispatch: React.Dispatch<UserAction>;
+  handleLogout: () => Promise<void>;
 } | null>(null);
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+};
 
 type UserState = {
   user: User | null;
@@ -92,22 +99,27 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("willowUser", JSON.stringify(state));
   }, [state]);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch({ type: "CLEAR_USER" });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user: state.user, dispatch }}>
+    <UserContext.Provider value={{ user: state.user, dispatch, handleLogout }}>
       {children}
     </UserContext.Provider>
   );
 };
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const user = useUser();
+  const { user } = useUser();
   const location = useLocation();
 
   if (!user) {
-    console.log({
-      pathname: location.pathname,
-      redirectTo: paths.auth.login.getHref(location.pathname),
-    });
     return (
       <Navigate to={paths.auth.login.getHref(location.pathname)} replace />
     );

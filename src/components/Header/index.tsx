@@ -1,16 +1,14 @@
-import { User } from "@/types/api";
-import { HStack } from "@chakra-ui/react";
-import styles from "./Header.module.css";
 import { paths } from "@/config/paths";
-import { LucideUser } from "lucide-react";
+import { useUser } from "@/lib/auth";
+import { HStack } from "@chakra-ui/react";
+import { LogOutIcon, LucideUser } from "lucide-react";
 import { ColorModeButton } from "../ui/color-mode";
 import { WLogo } from "../ui/WLogo";
+import styles from "./Header.module.css";
 
-type HeaderProps = {
-  user: User | null | undefined;
-};
+export function Header() {
+  const { user, handleLogout } = useUser();
 
-export function Header({ user }: HeaderProps) {
   if (window.innerWidth > 480) {
     return (
       <HStack
@@ -24,12 +22,15 @@ export function Header({ user }: HeaderProps) {
           paddingTop: "36px",
         }}>
         <WLogo />
-        <HStack>
+        <HStack spaceX={4}>
           {user ? (
-            <LucideUser
-              onClick={() => console.log("nav to account")}
-              data-testid="account-btn"
-            />
+            <>
+              <LucideUser
+                onClick={() => console.log("nav to account")}
+                data-testid="account-btn"
+              />
+              <LogOutIcon onClick={handleLogout} size={18} />
+            </>
           ) : (
             <a href={paths.auth.login.path} data-testid="login-link">
               Log in

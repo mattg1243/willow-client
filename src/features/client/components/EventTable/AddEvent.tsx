@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
-import { createListCollection, ListCollection } from "@chakra-ui/react";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -20,15 +18,17 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select";
+import { createListCollection, ListCollection } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 
-import { toaster } from "@/components/ui/toaster";
 import { Field } from "@/components/ui/field";
-import { Input } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
-import { DollarSign, PlusIcon } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toaster } from "@/components/ui/toaster";
 import { createEvent } from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
+import { Input } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DollarSign, PlusIcon } from "lucide-react";
 
 export function AddEvent({ clientId }: { clientId: string }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -69,7 +69,7 @@ export function AddEvent({ clientId }: { clientId: string }) {
     if (isPayment() && amount && date && clientId && eventTypeId) {
       return true;
     } else if (
-      !isPayment &&
+      !isPayment() &&
       duration &&
       date &&
       rate &&
@@ -93,6 +93,7 @@ export function AddEvent({ clientId }: { clientId: string }) {
         amount: isPayment() ? amount : rate * duration,
       },
     };
+    console.log(data);
     if (validateInput()) {
       setLoading(true);
 
@@ -186,6 +187,8 @@ export function AddEvent({ clientId }: { clientId: string }) {
               endElement={<>per hr</>}>
               <Input
                 type="number"
+                readOnly={isPayment()}
+                disabled={isPayment()}
                 value={isPayment() ? 0 : rate / 100}
                 onChange={(e) => setRate(parseInt(e.target.value) * 100)}
               />

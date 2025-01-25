@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { InputGroup } from "@/components/ui/input-group";
+import { PasswordInput } from "@/components/ui/password-input";
 import { toaster } from "@/components/ui/toaster";
 import { paths } from "@/config/paths";
 import { register, RegisterInput } from "@/lib/auth";
 import { Card, Input, Link, Text, VStack } from "@chakra-ui/react";
+import { DollarSign } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function RegisterForm() {
   const [fname, setFname] = useState<string>("");
@@ -14,6 +18,8 @@ export function RegisterForm() {
   const [password, setPassword] = useState<string>();
   const [confirmPassword, setConfirmPassword] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -32,6 +38,11 @@ export function RegisterForm() {
       };
       try {
         await register(data);
+        toaster.create({
+          type: "success",
+          title: "Your account has been created, you may now log in!",
+        });
+        navigate(paths.auth.login.getHref());
       } catch (err: any) {
         console.error(err);
         toaster.create({
@@ -51,50 +62,34 @@ export function RegisterForm() {
       <Card.Body gap="8">
         <Card.Title>Create your account</Card.Title>
         <Field label="First name">
-          <Input
-            placeholder="Enter your first name"
-            onChange={(e) => setFname(e.target.value)}
-            value={fname}
-          />
+          <Input onChange={(e) => setFname(e.target.value)} value={fname} />
         </Field>
         <Field label="Last name">
-          <Input
-            placeholder="Last name"
-            onChange={(e) => setLname(e.target.value)}
-            value={lname}
-          />
+          <Input onChange={(e) => setLname(e.target.value)} value={lname} />
         </Field>
         <Field
           label="Pay rate"
           helperText="Your hourly rate, used to calculate event charges.">
-          <Input
-            placeholder="$100"
-            onChange={(e) => setRate(parseInt(e.target.value) * 100)}
-            value={rate}
-          />
+          <InputGroup startElement={<DollarSign size={16} />} width={"100%"}>
+            <Input onChange={(e) => setRate(parseInt(e.target.value) * 100)} />
+          </InputGroup>
         </Field>
         <Field
           label="Email"
           required
           helperText="We'll never share your email"
           errorText="Your email is required to create an account">
-          <Input
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <Input onChange={(e) => setEmail(e.target.value)} />
         </Field>
         <Field label="Password" required errorText="A password is required">
-          <Input
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <PasswordInput onChange={(e) => setPassword(e.target.value)} />
         </Field>
         <Field
           label="Confirm password"
           required
           errorText="Please confirm your password">
-          <Input
-            placeholder="Confirm your password"
+          <PasswordInput
+            type="password"
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Field>

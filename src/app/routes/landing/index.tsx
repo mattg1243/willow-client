@@ -1,9 +1,9 @@
+import { paths } from "@/config/paths";
+import { useUser } from "@/lib/auth";
 import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import styles from "./Landing.module.css";
 import { Header } from "../../../components/Header";
-import { useUser } from "@/lib/auth";
-import { paths } from "@/config/paths";
+import styles from "./Landing.module.css";
 
 export function LandingRoute() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export function LandingRoute() {
 
   return (
     <div className={styles.cont}>
-      <Header user={user?.user} />
+      <Header />
       <div className={styles.section1}>
         <h1>With us, billing is easy</h1>
         <h3>

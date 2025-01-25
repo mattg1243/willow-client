@@ -1,8 +1,7 @@
-import React from "react";
-import { useUser } from "@/lib/auth";
-import { Head } from "../seo/Head";
-import { Header } from "../Header";
 import { VStack } from "@chakra-ui/react";
+import React from "react";
+import { Header } from "../Header";
+import { Head } from "../seo/Head";
 
 type ClientLayoutProps = {
   title: string;
@@ -10,12 +9,10 @@ type ClientLayoutProps = {
 };
 
 export function ClientLayout({ title, children }: ClientLayoutProps) {
-  const user = useUser();
-
   return (
     <>
       <Head title={title} />
-      <Header user={user?.user} />
+      <Header />
       <VStack width="100vw">{children}</VStack>
     </>
   );

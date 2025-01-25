@@ -31,7 +31,7 @@ export function AuthLayout(props: AuthLayoutProps) {
   return (
     <>
       <Head title={title} />
-      <Header user={user?.user} />
+      <Header />
       <VStack
         minHeight="90vh"
         justifyContent="center"

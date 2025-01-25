@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -11,13 +10,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { createClient, CreateClientInput } from "@/lib/api/clients";
-import { toaster } from "@/components/ui/toaster";
 import { Field } from "@/components/ui/field";
-import { Input } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
-import { DollarSign } from "lucide-react";
+import { toaster } from "@/components/ui/toaster";
+import { createClient, CreateClientInput } from "@/lib/api/clients";
+import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DollarSign, PlusIcon } from "lucide-react";
+import { useState } from "react";
 
 export function AddClient() {
   const [open, setOpen] = useState<boolean>(false);
@@ -71,6 +71,7 @@ export function AddClient() {
     <DialogRoot lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
+          <PlusIcon size={16} />
           Add Client
         </Button>
       </DialogTrigger>
