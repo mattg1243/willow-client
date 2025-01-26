@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
-import { createListCollection, Icon, ListCollection } from "@chakra-ui/react";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -20,17 +18,19 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select";
+import { createListCollection, Icon, ListCollection } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 
-import { toaster } from "@/components/ui/toaster";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
-import { Input } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
-import { DollarSign, Edit } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toaster } from "@/components/ui/toaster";
 import { updateEvent, UpdateEventInput } from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
 import { type Event } from "@/types/api";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DollarSign, Edit } from "lucide-react";
 
 export function UpdateEvent({
   event,
@@ -117,7 +117,7 @@ export function UpdateEvent({
       </DialogTrigger>
       <DialogContent ref={contentRef}>
         <DialogHeader>
-          <DialogTitle>Add Event</DialogTitle>
+          <DialogTitle>Edit Event</DialogTitle>
         </DialogHeader>
         <DialogBody spaceY={8} alignItems="center">
           <SelectRoot

@@ -18,7 +18,7 @@ export function DashboardRoute() {
 
   return (
     <ProtectedRoute>
-      <DashboardLayout title="Dashboard | Willow">
+      <DashboardLayout title="Dashboard">
         <VStack spaceY={8}>
           <h1>Clients</h1>
           {isLoading ? (

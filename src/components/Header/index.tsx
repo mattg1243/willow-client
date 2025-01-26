@@ -1,13 +1,15 @@
 import { paths } from "@/config/paths";
 import { useUser } from "@/lib/auth";
 import { HStack } from "@chakra-ui/react";
-import { LogOutIcon, LucideUser } from "lucide-react";
+import { HomeIcon, LogOutIcon, LucideUser } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { ColorModeButton } from "../ui/color-mode";
 import { WLogo } from "../ui/WLogo";
 import styles from "./Header.module.css";
 
 export function Header() {
   const { user, handleLogout } = useUser();
+  const navigate = useNavigate();
 
   if (window.innerWidth > 480) {
     return (
@@ -21,7 +23,10 @@ export function Header() {
           padding: "16px",
           paddingTop: "36px",
         }}>
-        <WLogo />
+        <HStack spaceX={8}>
+          <WLogo />
+          <HomeIcon onClick={() => navigate(paths.app.dashboard.getHref())} />
+        </HStack>
         <HStack spaceX={4}>
           {user ? (
             <>

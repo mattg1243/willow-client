@@ -26,7 +26,7 @@ export function ClientRoute() {
   return (
     <ProtectedRoute>
       {clientId && client ? (
-        <ClientLayout title={`${client.fname} ${client.lname} | Willow`}>
+        <ClientLayout title={`${client.fname} ${client.lname}`}>
           <VStack spaceY={8}>
             <h1>{client.fname + " " + client.lname}</h1>
             <h3>{moneyToStr(client.balance)}</h3>

@@ -70,7 +70,7 @@ export function AddClient() {
   return (
     <DialogRoot lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline">
           <PlusIcon size={16} />
           Add Client
         </Button>

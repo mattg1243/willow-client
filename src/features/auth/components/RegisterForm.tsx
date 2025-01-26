@@ -23,9 +23,6 @@ export function RegisterForm() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
     if (fname && lname && email && password && password === confirmPassword) {
       const data: RegisterInput = {
         user: {
@@ -50,6 +47,8 @@ export function RegisterForm() {
             "An error occurred creating your account: " + err?.message || err,
           type: "error",
         });
+      } finally {
+        setLoading(false);
       }
     } else {
       toaster.create({ title: "Your passwords must match", type: "error" });
@@ -71,7 +70,10 @@ export function RegisterForm() {
           label="Pay rate"
           helperText="Your hourly rate, used to calculate event charges.">
           <InputGroup startElement={<DollarSign size={16} />} width={"100%"}>
-            <Input onChange={(e) => setRate(parseInt(e.target.value) * 100)} />
+            <Input
+              type="number"
+              onChange={(e) => setRate(parseInt(e.target.value) * 100)}
+            />
           </InputGroup>
         </Field>
         <Field
