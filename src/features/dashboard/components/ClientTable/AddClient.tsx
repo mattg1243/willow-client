@@ -14,18 +14,23 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
 import { createClient, CreateClientInput } from "@/lib/api/clients";
+import { useUser } from "@/lib/auth";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 export function AddClient() {
+  const { user } = useUser();
+
   const [open, setOpen] = useState<boolean>(false);
   const [fname, setFname] = useState<string>();
   const [noFname, setNoFname] = useState<boolean>(false);
   const [lname, setLname] = useState<string>();
   const [email, setEmail] = useState<string>();
-  const [rate, setRate] = useState<number>(10000);
+  const [rate, setRate] = useState<number | undefined>(
+    user?.rate as number | undefined
+  );
   const [noRate, setNoRate] = useState<boolean>(false);
   const [phone, setPhone] = useState<string>();
   const [balanceNotifyThreshold, setBalanceNotifyThreshold] =
@@ -41,7 +46,7 @@ export function AddClient() {
         fname,
         lname,
         email,
-        rate,
+        rate: rate as number,
         phone,
         balanceNotifyThreshold,
       };
@@ -85,7 +90,6 @@ export function AddClient() {
             invalid={noFname}
             errorText="You must provide a first name to create a client">
             <Input
-              placeholder="John"
               onChange={(e) => {
                 setFname(e.target.value);
                 if (e.target.value.length > 0) {
@@ -97,17 +101,10 @@ export function AddClient() {
             />
           </Field>
           <Field label="Last name">
-            <Input
-              placeholder="Doe"
-              onChange={(e) => setLname(e.target.value)}
-            />
+            <Input onChange={(e) => setLname(e.target.value)} />
           </Field>
           <Field label="Email">
-            <Input
-              placeholder="jdoe@email.com"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <Input type="email" onChange={(e) => setEmail(e.target.value)} />
           </Field>
           <Field
             label="Rate"
@@ -124,7 +121,7 @@ export function AddClient() {
                   }
                 }}
                 type="number"
-                value={rate / 100}
+                value={rate ? rate / 100 : undefined}
               />
             </InputGroup>
           </Field>
@@ -132,12 +129,14 @@ export function AddClient() {
             <Input onChange={(e) => setPhone(e.target.value)} type="tel" />
           </Field>
           <Field label="Low balance threshold">
-            <Input
-              onChange={(e) =>
-                setBalanceNotifyThreshold(parseInt(e.target.value) * 100)
-              }
-              type="number"
-            />
+            <InputGroup startElement={<DollarSign size={16} />} width="100%">
+              <Input
+                onChange={(e) =>
+                  setBalanceNotifyThreshold(parseInt(e.target.value) * 100)
+                }
+                type="number"
+              />
+            </InputGroup>
           </Field>
         </DialogBody>
         <DialogFooter>

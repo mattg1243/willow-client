@@ -18,9 +18,9 @@ export type User = Entity<{
 }>;
 
 type PaymentInfo = {
-  zelle: string | null | undefined;
-  paypal: string | null | undefined;
-  venmo: string | null | undefined;
+  zelle?: string | null | undefined;
+  paypal?: string | null | undefined;
+  venmo?: string | null | undefined;
 };
 
 export type UserContactInfo = Entity<{
@@ -30,7 +30,7 @@ export type UserContactInfo = Entity<{
   state: string | null | undefined;
   street: string | null | undefined;
   zip: string | null | undefined;
-  paymentinfo: PaymentInfo;
+  paymentinfo?: PaymentInfo;
 }>;
 
 export type Client = Entity<{

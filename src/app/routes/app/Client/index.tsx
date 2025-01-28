@@ -1,5 +1,6 @@
 import { ClientLayout } from "@/components/layout/clientLayout";
 import { EventsTable } from "@/features/client/components/EventTable";
+import { StatementBtn } from "@/features/statement";
 import { getClient } from "@/lib/api/clients";
 import { getEventsByClient } from "@/lib/api/events";
 import { ProtectedRoute } from "@/lib/auth";
@@ -30,6 +31,7 @@ export function ClientRoute() {
           <VStack spaceY={8}>
             <h1>{client.fname + " " + client.lname}</h1>
             <h3>{moneyToStr(client.balance)}</h3>
+            <StatementBtn events={events || []} client={client}  />
             <EventsTable
               events={events || []}
               clientId={clientId}

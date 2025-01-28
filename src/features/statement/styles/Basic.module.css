@@ -1,0 +1,104 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 64px;
+}
+
+.table {
+  margin-top: 3rem;
+}
+
+.thead {
+  font-size: 1.25em;
+  border-bottom: 3px solid;
+}
+
+.text {
+  padding: 0;
+  margin: 0;
+  white-space: normal;
+}
+
+.td {
+  font-size: 1.25em;
+}
+
+.heading {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.date-section {
+  margin-bottom: 2rem;
+}
+
+.notes-field {
+  width: 350px;
+  white-space: initial;
+}
+
+.info-section {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.info-spacer {
+  width: 50px;
+}
+
+.provider-info-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.client-info-section {
+  padding-top: 2rem;
+  flex-direction: column;
+  overflow-wrap: break-word;
+}
+
+.payment-details-section {
+  inline-size: 250px;
+}
+
+.bullet {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  justify-content: center;
+  margin: -8px -4px 12px;
+  padding: 0 8px;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-start {
+  text-align: start;
+}
+
+.text-align-end {
+  text-align: end;
+}
+
+.row {
+  margin: 0;
+}
+
+.spacer {
+  width: 10px;
+}

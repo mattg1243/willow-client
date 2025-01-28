@@ -31,7 +31,7 @@ export function Header() {
           {user ? (
             <>
               <LucideUser
-                onClick={() => console.log("nav to account")}
+                onClick={() => navigate(paths.app.profile.getHref())}
                 data-testid="account-btn"
               />
               <LogOutIcon onClick={handleLogout} size={18} />

@@ -1,11 +1,12 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { paths } from "@/config/paths";
-import { LandingRoute } from "./routes/landing";
+import { ClientRoute } from "./routes/app/Client";
+import { DashboardRoute } from "./routes/app/Dashboard";
+import { ProfileRoute } from "./routes/app/Profile";
 import { LoginRoute } from "./routes/auth/Login";
 import { RegisterRoute } from "./routes/auth/Register";
-import { DashboardRoute } from "./routes/app/Dashboard";
-import { ClientRoute } from "./routes/app/Client";
+import { LandingRoute } from "./routes/landing";
 
 const createAppRouter = () =>
   createBrowserRouter([
@@ -28,6 +29,10 @@ const createAppRouter = () =>
     {
       path: paths.app.client.path,
       element: <ClientRoute />,
+    },
+    {
+      path: paths.app.profile.path,
+      element: <ProfileRoute />,
     },
   ]);
 
