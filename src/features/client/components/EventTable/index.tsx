@@ -6,7 +6,7 @@ import {
   PaginationRoot,
 } from "@/components/ui/pagination";
 import { deleteEvents } from "@/lib/api/events";
-import { type Event } from "@/types/api";
+import { Client, type Event } from "@/types/api";
 import { HStack, Spinner, Table, VStack } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -20,12 +20,12 @@ import { UpdateEvent } from "./UpdateEvent";
 const pageSize = 5;
 
 export type EventsTableProps = {
-  clientId: string;
+  client: Client;
   events: Event[];
   loading: boolean;
 };
 
-export function EventsTable({ clientId, events, loading }: EventsTableProps) {
+export function EventsTable({ client, events, loading }: EventsTableProps) {
   const [page, setPage] = useState<number>(1);
   const [selection, setSelection] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortByOptions>("created_at");
@@ -68,7 +68,7 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
 
   const deleteEventsAction = async () => {
     if (selection.length > 0) {
-      deleteEvents(selection, clientId);
+      deleteEvents(selection, client.id);
     }
   };
 
@@ -76,7 +76,7 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
     mutationFn: deleteEventsAction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
-      queryClient.invalidateQueries({ queryKey: ["client", clientId] });
+      queryClient.invalidateQueries({ queryKey: ["client", client.id] });
     },
   });
 
@@ -94,7 +94,7 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
             order={order}
             onOrderChange={setOrder}
           />
-          <AddEvent clientId={clientId} />
+          <AddEvent clientId={client.id} clientRate={client.rate} />
           <FilterButton filter={filter} setFilter={setFilter} />
         </HStack>
         <Table.Root
@@ -131,7 +131,7 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
                           );
                         }}
                       />
-                      <UpdateEvent event={event} clientId={clientId} />
+                      <UpdateEvent event={event} clientId={client.id} />
                     </Table.Cell>
                     <Table.Cell>{event.event_type_title}</Table.Cell>
                     <Table.Cell>{moneyToStr(event.amount)}</Table.Cell>
@@ -164,7 +164,7 @@ export function EventsTable({ clientId, events, loading }: EventsTableProps) {
         <EventsTableActionBar
           open={hasSelection}
           selectionLength={selection.length}
-          clientId={clientId}
+          clientId={client.id}
           onDelete={async () => {
             deleteEventsMutation();
           }}

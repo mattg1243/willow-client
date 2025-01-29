@@ -7,7 +7,7 @@ import {
   PaginationRoot,
 } from "@/components/ui/pagination";
 import { paths } from "@/config/paths";
-import { deleteClients } from "@/lib/api/clients";
+import { archiveClients, deleteClients } from "@/lib/api/clients";
 import { Client } from "@/types/api";
 import { moneyToStr } from "@/utils/money";
 import { Badge, HStack, Input, Table, VStack } from "@chakra-ui/react";
@@ -101,11 +101,24 @@ export function ClientTable({ clients }: ClientTableProps) {
     }
   };
 
+  const archiveClientsAction = async () => {
+    if (selection.length > 0) {
+      archiveClients(selection);
+    }
+  };
+
   const { mutateAsync: deleteClientsMutate } = useMutation({
     mutationFn: deleteClientsAction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });
       queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
+
+  const { mutateAsync: archiveClientsMutate } = useMutation({
+    mutationFn: archiveClientsAction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
   });
 
@@ -223,7 +236,9 @@ export function ClientTable({ clients }: ClientTableProps) {
       <ClientTableActionBar
         open={hasSelection}
         selectionLength={selection.length}
-        onArchive={async () => console.log("archiveaction")}
+        onArchive={async () => {
+          archiveClientsMutate();
+        }}
         onDelete={async () => {
           deleteClientsMutate();
         }}

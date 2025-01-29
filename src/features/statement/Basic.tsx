@@ -25,6 +25,7 @@ export function BasicStatement({
   amount,
   notes,
 }: StatementData) {
+  console.log(userContactInfo);
   return (
     <div className={styles.container}>
       {/* <!-- header section --> */}
@@ -39,22 +40,40 @@ export function BasicStatement({
           <div className={styles["text-align-end"]} id="providerNameField">
             {user.nameforheader || user.fname + " " + user.lname}
           </div>
-          <div className={styles.bullet}>&bull;</div>
-          <div className={styles["text-align-center"]}>
-            {userContactInfo.street}
-          </div>
-          <div className={styles.bullet}>&bull;</div>
-          <div className={styles["text-align-start"]}>
-            {userContactInfo.city}, {userContactInfo.state}
-          </div>
+          {userContactInfo.street ? (
+            <>
+              <div className={styles.bullet}>&bull;</div>
+              <div className={styles["text-align-center"]}>
+                {userContactInfo.street}
+              </div>
+            </>
+          ) : null}
+          {userContactInfo.city ? (
+            <>
+              <div className={styles.bullet}>&bull;</div>
+              <div className={styles["text-align-start"]}>
+                {userContactInfo.city}, {userContactInfo.state}
+              </div>
+            </>
+          ) : null}
         </div>
         <div className={styles["provider-info-section"]}>
-          <div className="col-auto text-align-end">{userContactInfo.phone}</div>
-          <div className={styles.bullet}>&bull;</div>
-          <div className="col-auto text-align-start">{user.license}</div>
+          {userContactInfo.phone ? (
+            <>
+              <div className="col-auto text-align-end">
+                {userContactInfo.phone}
+              </div>
+              <div className={styles.bullet}>&bull;</div>
+            </>
+          ) : null}
+          {user.license ? (
+            <div className="col-auto text-align-start">{user.license}</div>
+          ) : null}
         </div>
         <div className={styles["info-section"]}>
-          <div className={styles["client-info-section"]}>
+          <div
+            className={styles["client-info-section"]}
+            style={{ textAlign: "start" }}>
             {/* <!-- client section --> */}
             <div style={{ alignSelf: "start" }}>
               <p>
@@ -77,17 +96,19 @@ export function BasicStatement({
               </div>
             ) : null}
             {notes ? (
-              <div className="row" id="notes-field">
+              <div
+                style={{ maxWidth: "350px", textAlign: "start" }}
+                id="notes-field">
                 <p>
                   <strong>Note: </strong>
-                  {notes}.
+                  {notes}
                 </p>
               </div>
             ) : null}
           </div>
           <div className={styles["info-spacer"]}></div>
           <div
-            className={`${styles["client-info-section"]} ${styles["payment-details-section"]}`}>
+            className={`${styles["client-info-section"]} ${styles["payment-details-section"]}`} style={{ textAlign: 'start'}}>
             <div className="row-1">
               <p>
                 <strong>Payment Methods</strong>
@@ -102,7 +123,7 @@ export function BasicStatement({
               <div>
                 <p>
                   <strong>PayPal: </strong>
-                  {userContactInfo.paymentinfo?.paypal}
+                  {userContactInfo.paymentinfo.paypal}
                 </p>
               </div>
             ) : null}
@@ -110,7 +131,7 @@ export function BasicStatement({
               <div>
                 <p>
                   <strong>Venmo: </strong>
-                  {userContactInfo.paymentinfo?.venmo}
+                  {userContactInfo.paymentinfo.venmo}
                 </p>
               </div>
             ) : null}
@@ -118,7 +139,7 @@ export function BasicStatement({
               <div>
                 <p>
                   <strong>Zelle: </strong>
-                  {userContactInfo.paymentinfo?.zelle}
+                  {userContactInfo.paymentinfo.zelle}
                 </p>
               </div>
             ) : null}

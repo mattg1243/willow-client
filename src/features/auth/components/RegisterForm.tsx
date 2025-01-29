@@ -32,6 +32,13 @@ export function RegisterForm() {
           email,
           password,
         },
+        contactInfo: {
+          phone: "",
+          city: "",
+          state: "",
+          street: "",
+          zip: "",
+        },
       };
       try {
         await register(data);
@@ -60,7 +67,7 @@ export function RegisterForm() {
     <Card.Root maxWidth="480px">
       <Card.Body gap="8">
         <Card.Title>Create your account</Card.Title>
-        <Field label="First name">
+        <Field label="First name" required>
           <Input onChange={(e) => setFname(e.target.value)} value={fname} />
         </Field>
         <Field label="Last name">

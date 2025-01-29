@@ -30,14 +30,20 @@ import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, PlusIcon } from "lucide-react";
 
-export function AddEvent({ clientId }: { clientId: string }) {
+export function AddEvent({
+  clientId,
+  clientRate,
+}: {
+  clientId: string;
+  clientRate: number;
+}) {
   const [open, setOpen] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const [duration, setDuration] = useState<number>(0);
   const [eventTypeId, setEventTypeId] = useState<string>();
   const [userEventTypes, setUserEventTypes] =
     useState<ListCollection<{ label: string; value: string }>>();
-  const [rate, setRate] = useState<number>(0);
+  const [rate, setRate] = useState<number>(clientRate);
   const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 

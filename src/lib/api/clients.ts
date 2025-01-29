@@ -29,6 +29,12 @@ export const getClients = async (): Promise<Client[]> => {
 
 export const updateClientSchema = createClientSchema.extend({
   id: z.string().min(1, "id is required to update a client"),
+  fname: z.string().min(1, "First name is required"),
+  lname: z.string().optional().nullable(),
+  email: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  balancenotifythreshol: z.number().optional().nullable(),
+  rate: z.number().optional().nullable(),
   isarchived: z.boolean(),
 });
 
@@ -38,6 +44,14 @@ export const updateClient = async (
   data: UpdateClientInput
 ): Promise<Client> => {
   return api.put("/client", data);
+};
+
+export const archiveClients = async (ids: string[]): Promise<void> => {
+  let queryStr = "";
+  for (const id of ids) {
+    queryStr += `id=${id}&`;
+  }
+  return api.put(`/client/archive?${queryStr.slice(0, -1)}`);
 };
 
 export const deleteClients = async (ids: string[]): Promise<void> => {

@@ -35,15 +35,13 @@ export const registerInputSchema = z.object({
     lname: z.string(),
     rate: z.number().optional(),
   }),
-  contactInfo: z
-    .object({
-      phone: z.string().optional(),
-      city: z.string().optional(),
-      state: z.string().optional(),
-      street: z.string().optional(),
-      zip: z.string().optional(),
-    })
-    .optional(),
+  contactInfo: z.object({
+    phone: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    street: z.string().optional(),
+    zip: z.string().optional(),
+  }),
 });
 
 export type RegisterInput = z.infer<typeof registerInputSchema>;

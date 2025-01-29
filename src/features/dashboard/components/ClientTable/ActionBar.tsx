@@ -1,9 +1,9 @@
-import { useState } from "react";
 import {
   ActionBarRoot,
-  ActionBarSeparator,
   ActionBarSelectionTrigger,
+  ActionBarSeparator,
 } from "@/components/ui/action-bar";
+import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
   DialogBody,
@@ -14,8 +14,8 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { ActionBarContent, Input, Kbd } from "@chakra-ui/react";
+import { useState } from "react";
 
 export type ClientTableActionBarProps = {
   open: boolean;
@@ -48,7 +48,9 @@ export function ClientTableActionBar({
 
   return (
     <>
-      <DialogRoot open={deleteModalOpen}>
+      <DialogRoot
+        open={deleteModalOpen}
+        onOpenChange={(e) => setDeleteModalOpen(e.open)}>
         <DialogBackdrop />
         <DialogContent>
           <DialogCloseTrigger />
@@ -73,6 +75,7 @@ export function ClientTableActionBar({
             </Button>
           </DialogBody>
           <DialogFooter />
+          <DialogCloseTrigger />
         </DialogContent>
       </DialogRoot>
       <ActionBarRoot open={open}>

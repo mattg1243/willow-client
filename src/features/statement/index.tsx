@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { CheckboxCard } from "@/components/ui/checkbox-card";
 import {
   DialogBody,
+  DialogCloseTrigger,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -9,14 +10,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
+import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
 import { getUserContactInfo } from "@/lib/api/user";
 import { useUser } from "@/lib/auth";
 import { system } from "@/theme";
 import { Client, Event, UserContactInfo } from "@/types/api";
-import { Input, SimpleGrid } from "@chakra-ui/react";
+import { HStack, Input, SimpleGrid, Textarea } from "@chakra-ui/react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { DollarSign } from "lucide-react";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { BasicStatement, StatementData } from "./Basic";
 
@@ -62,8 +65,10 @@ export function StatementBtn({
   const [open, setOpen] = useState<boolean>(false);
   const [selectedStatement, setSelectedStatement] = useState<number>(0);
   const [contactInfo, setContactInfo] = useState<UserContactInfo>();
-  const [startDate, setStartDate] = useState<Date>(new Date(0));
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  const [notes, setNotes] = useState<string>();
+  const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -81,6 +86,29 @@ export function StatementBtn({
     selectedStatement !== undefined
       ? statementTemplates[selectedStatement].template
       : null;
+
+  const reslovedEvents: Event[] = events.filter((e) => {
+    const eventDate = new Date(e.date);
+    if (startDate && endDate) {
+      return eventDate >= startDate && endDate >= eventDate;
+    } else if (startDate && !endDate) {
+      return eventDate >= startDate;
+    } else if (endDate && !startDate) {
+      return endDate >= eventDate;
+    } else {
+      return true;
+    }
+  });
+
+  const validateDateRange = () => {
+    if (startDate && endDate) {
+      return startDate <= endDate;
+    } else if (startDate && startDate > new Date()) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const handleCreatePdf = async () => {
     const hiddenStatement = hiddenStatementRef.current;
@@ -149,17 +177,42 @@ export function StatementBtn({
                 );
               })}
             </SimpleGrid>
-            <Field label="Start date">
-              <Input
-                type="date"
-                onChange={(e) => setStartDate(new Date(e.target.value))}
+            <Field label="Date range" invalid={validateDateRange()}>
+              <HStack width="100%">
+                <Input
+                  type="date"
+                  onChange={(e) =>
+                    setStartDate(
+                      e.target.value ? new Date(e.target.value) : undefined
+                    )
+                  }
+                />{" "}
+                -
+                <Input
+                  type="date"
+                  onChange={(e) =>
+                    setEndDate(
+                      e.target.value ? new Date(e.target.value) : undefined
+                    )
+                  }
+                />
+              </HStack>
+            </Field>
+            <Field label="Notes" helperText="Max 150 characters">
+              <Textarea
+                onChange={(e) => setNotes(e.target.value)}
+                value={notes}
+                maxLength={150}
               />
             </Field>
-            <Field label="End date">
-              <Input
-                type="date"
-                onChange={(e) => setEndDate(new Date(e.target.value))}
-              />
+            <Field label="Amount">
+              <InputGroup startElement={<DollarSign size={16} />}>
+                <Input
+                  type="number"
+                  onChange={(e) => setAmount(parseInt(e.target.value) * 100)}
+                  value={amount ? amount / 100 : undefined}
+                />
+              </InputGroup>
             </Field>
           </DialogBody>
           <DialogFooter>
@@ -171,6 +224,7 @@ export function StatementBtn({
               Create statement
             </Button>
           </DialogFooter>
+          <DialogCloseTrigger />
         </DialogContent>
       </DialogRoot>
       <div
@@ -184,10 +238,12 @@ export function StatementBtn({
         id="hidden-statement">
         {SelectedTemplate && user && contactInfo ? (
           <SelectedTemplate
-            events={events}
+            events={reslovedEvents}
             client={client}
             user={user}
             userContactInfo={contactInfo}
+            amount={amount}
+            notes={notes}
           />
         ) : null}
       </div>

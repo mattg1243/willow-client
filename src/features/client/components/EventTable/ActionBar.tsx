@@ -1,9 +1,9 @@
-import { useState } from "react";
 import {
   ActionBarRoot,
-  ActionBarSeparator,
   ActionBarSelectionTrigger,
+  ActionBarSeparator,
 } from "@/components/ui/action-bar";
+import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
   DialogBody,
@@ -14,8 +14,8 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { ActionBarContent, Input, Kbd } from "@chakra-ui/react";
+import { useState } from "react";
 
 export type EventTableActionBarProps = {
   open: boolean;
@@ -71,6 +71,7 @@ export function EventsTableActionBar({
               Delete
             </Button>
           </DialogBody>
+          <DialogCloseTrigger />
           <DialogFooter />
         </DialogContent>
       </DialogRoot>

@@ -1,5 +1,6 @@
 import { ClientLayout } from "@/components/layout/clientLayout";
 import { EventsTable } from "@/features/client/components/EventTable";
+import { UpdateClient } from "@/features/client/components/UpdateClient";
 import { StatementBtn } from "@/features/statement";
 import { getClient } from "@/lib/api/clients";
 import { getEventsByClient } from "@/lib/api/events";
@@ -7,6 +8,7 @@ import { ProtectedRoute } from "@/lib/auth";
 import { moneyToStr } from "@/utils/money";
 import { VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { BookMarked } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 export function ClientRoute() {
@@ -28,13 +30,26 @@ export function ClientRoute() {
     <ProtectedRoute>
       {clientId && client ? (
         <ClientLayout title={`${client.fname} ${client.lname}`}>
-          <VStack spaceY={8}>
+          <VStack spaceY={4}>
             <h1>{client.fname + " " + client.lname}</h1>
+            {client.isarchived ? (
+              <h4>
+                Archived
+                <BookMarked
+                  size={12}
+                  style={{
+                    display: "inline",
+                    marginLeft: 6,
+                  }}
+                />
+              </h4>
+            ) : null}
             <h3>{moneyToStr(client.balance)}</h3>
-            <StatementBtn events={events || []} client={client}  />
+            <UpdateClient client={client} />
+            <StatementBtn events={events || []} client={client} />
             <EventsTable
               events={events || []}
-              clientId={clientId}
+              client={client}
               loading={eventsLoading}
             />
           </VStack>

@@ -19,6 +19,7 @@ import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { withMask } from "use-mask-input";
 
 export function AddClient() {
   const { user } = useUser();
@@ -126,7 +127,11 @@ export function AddClient() {
             </InputGroup>
           </Field>
           <Field label="Phone number">
-            <Input onChange={(e) => setPhone(e.target.value)} type="tel" />
+            <Input
+              ref={withMask("(999) 999-9999")}
+              onChange={(e) => setPhone(e.target.value)}
+              type="tel"
+            />
           </Field>
           <Field label="Low balance threshold">
             <InputGroup startElement={<DollarSign size={16} />} width="100%">
