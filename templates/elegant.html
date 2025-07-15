@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Elegant Billing Statement</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans&display=swap");
+
+      body {
+        font-family: "Open Sans", sans-serif;
+        background: #fdfcfb;
+        padding: 50px;
+        color: #4a4a4a;
+      }
+
+      .statement {
+        max-width: 800px;
+        background: #fff;
+        margin: auto;
+        padding: 60px;
+        border: 1px solid #e0dcdc;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+
+      header {
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+      }
+
+      .company-name {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        color: #2e2e2e;
+      }
+
+      .company-details {
+        text-align: right;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      h1 {
+        text-align: center;
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        margin-bottom: 40px;
+        color: #3a3a3a;
+      }
+
+      .info-grid {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        font-size: 15px;
+      }
+
+      .info-block {
+        width: 48%;
+        line-height: 1.6;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #e7e7e7;
+        padding: 14px 12px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #fafafa;
+        font-weight: 600;
+        font-size: 15px;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .total {
+        margin-top: 30px;
+        text-align: right;
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c2c2c;
+      }
+
+      footer {
+        margin-top: 60px;
+        text-align: center;
+        font-size: 12px;
+        color: #888;
+        border-top: 1px solid #ddd;
+        padding-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="statement">
+      <header>
+        <div class="company-name">Luna & Co.</div>
+        <div class="company-details">
+          22 Crescent Ave, Suite 301<br />
+          San Francisco, CA 94110<br />
+          hello@lunaco.com
+        </div>
+      </header>
+
+      <h1>Billing Statement</h1>
+
+      <div class="info-grid">
+        <div class="info-block">
+          <strong>Bill To:</strong><br />
+          Sophia Rose<br />
+          789 Blossom Blvd<br />
+          Portland, OR 97214
+        </div>
+        <div class="info-block">
+          <strong>Date:</strong> March 31, 2025<br />
+          <strong>Invoice #:</strong> LUNA-0209
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Hours</th>
+            <th>Rate</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Creative Direction</td>
+            <td>5</td>
+            <td>$120.00</td>
+            <td>$600.00</td>
+          </tr>
+          <tr>
+            <td>Brand Consulting</td>
+            <td>3</td>
+            <td>$95.00</td>
+            <td>$285.00</td>
+          </tr>
+          <tr>
+            <td>Creative Direction</td>
+            <td>5</td>
+            <td>$120.00</td>
+            <td>$600.00</td>
+          </tr>
+          <tr>
+            <td>Brand Consulting</td>
+            <td>3</td>
+            <td>$95.00</td>
+            <td>$285.00</td>
+          </tr>
+          <tr>
+            <td>Creative Direction</td>
+            <td>5</td>
+            <td>$120.00</td>
+            <td>$600.00</td>
+          </tr>
+          <tr>
+            <td>Brand Consulting</td>
+            <td>3</td>
+            <td>$95.00</td>
+            <td>$285.00</td>
+          </tr>
+          <tr>
+            <td>Creative Direction</td>
+            <td>5</td>
+            <td>$120.00</td>
+            <td>$600.00</td>
+          </tr>
+          <tr>
+            <td>Brand Consulting</td>
+            <td>3</td>
+            <td>$95.00</td>
+            <td>$285.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="total">Total Due: $885.00</div>
+
+      <footer>
+        Thank you for your business. Payment is due within 14 days.<br />
+        Questions? Reach us at hello@lunaco.com.
+      </footer>
+    </div>
+  </body>
+</html>

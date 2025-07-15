@@ -13,7 +13,9 @@ export function ClientLayout({ title, children }: ClientLayoutProps) {
     <>
       <Head title={title} />
       <Header />
-      <VStack width="100vw">{children}</VStack>
+      <VStack width="100vw" paddingTop={100}>
+        {children}
+      </VStack>
     </>
   );
 }

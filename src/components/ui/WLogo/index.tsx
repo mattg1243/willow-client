@@ -1,10 +1,14 @@
 import { system } from "@/theme";
+import { useState } from "react";
 
 type WLogoProps = {
   height?: string | number;
+  onClick?: () => void;
 };
 
-export function WLogo({ height }: WLogoProps) {
+export function WLogo({ height, onClick }: WLogoProps) {
+  const [isHovered, setHovered] = useState<boolean>(false);
+
   return (
     <div
       style={{
@@ -16,7 +20,11 @@ export function WLogo({ height }: WLogoProps) {
         justifyContent: "center",
         alignItems: "center",
         border: "1px solid white",
-      }}>
+        cursor: isHovered && onClick ? "pointer" : "default",
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}>
       <p
         className="willow-cursive"
         style={{

@@ -18,7 +18,7 @@ import { useUser } from "@/lib/auth";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { withMask } from "use-mask-input";
 
 export function AddClient() {
@@ -30,7 +30,7 @@ export function AddClient() {
   const [lname, setLname] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [rate, setRate] = useState<number | undefined>(
-    user?.rate as number | undefined
+    (user?.rate as number) || undefined
   );
   const [noRate, setNoRate] = useState<boolean>(false);
   const [phone, setPhone] = useState<string>();
@@ -39,6 +39,10 @@ export function AddClient() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    console.log(user);
+  });
 
   const submit = async () => {
     if (fname) {

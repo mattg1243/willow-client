@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   MenuContent,
   MenuRadioItem,
@@ -5,9 +6,8 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Button } from "@/components/ui/button";
-import { FilterIcon } from "lucide-react";
 import { VStack } from "@chakra-ui/react";
+import { FilterIcon } from "lucide-react";
 
 export type FilterOptions = "Charge" | "Payment" | "All";
 
@@ -16,7 +16,7 @@ export type FilterButtonProps = {
   setFilter: (filter: FilterOptions) => void;
 };
 
-export function FilterButton({ filter, setFilter }: FilterButtonProps) {
+export function FilterBtn({ filter, setFilter }: FilterButtonProps) {
   return (
     <>
       <VStack alignSelf="end" textAlign="flex-end" alignItems="end">

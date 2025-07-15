@@ -5,11 +5,13 @@ import { paths } from "@/config/paths";
 import { getUser, login, LoginInput, useUser } from "@/lib/auth";
 import { Card, Input, Link, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
+import { ResetPasswordModal } from "./ResetPasswordModal";
 
 export function LoginForm() {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState<boolean>(false);
 
   const userDispatch = useUser();
 
@@ -44,7 +46,7 @@ export function LoginForm() {
   };
 
   return (
-    <Card.Root maxWidth="480px" margin="16px">
+    <Card.Root maxWidth="480px" margin="16px" shadow="lg">
       <Card.Body gap="8">
         <Card.Title>Login to your account</Card.Title>
         <Field label="Email" required errorText="An email is required to login">
@@ -74,6 +76,10 @@ export function LoginForm() {
             Don't have an account one? Create one for free{" "}
             <Link href={paths.auth.register.path}>here</Link>.
           </Text>
+          <ResetPasswordModal
+            open={forgotPasswordOpen}
+            setOpen={setForgotPasswordOpen}
+          />
         </VStack>
       </Card.Body>
     </Card.Root>

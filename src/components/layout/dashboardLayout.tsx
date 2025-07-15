@@ -15,7 +15,9 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     <>
       <Head title={title} />
       <Header />
-      <VStack width="100vw">{children}</VStack>
+      <VStack width="100vw" paddingTop={100}>
+        {children}
+      </VStack>
     </>
   );
 }

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Modern Gradient Billing Statement</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 50px;
+        background: linear-gradient(to bottom right, #f9f9fc, #eef1f8);
+        color: #2d2d2d;
+      }
+
+      .statement {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        border-radius: 10px;
+        padding: 60px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+
+      .logo {
+        font-size: 26px;
+        font-weight: 600;
+        color: #4b5bdc;
+      }
+
+      .company-info {
+        text-align: right;
+        font-size: 13px;
+      }
+
+      h1 {
+        font-size: 30px;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #4b5bdc;
+      }
+
+      .info-grid {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        margin-bottom: 40px;
+      }
+
+      .info-block {
+        width: 47%;
+        line-height: 1.6;
+      }
+
+      table {
+        width: 100%;
+        border-spacing: 0;
+        margin-bottom: 30px;
+      }
+
+      th {
+        background: #f1f3fc;
+        text-align: left;
+        padding: 14px;
+        font-size: 14px;
+        color: #4b5bdc;
+      }
+
+      td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #e6e8f0;
+      }
+
+      .total {
+        text-align: right;
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+        margin-top: 20px;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 60px;
+        font-size: 12px;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="statement">
+      <header>
+        <div class="logo">Bluepebble Studio</div>
+        <div class="company-info">
+          1428 Design Row<br />
+          Austin, TX 78701<br />
+          hello@bluepebble.io
+        </div>
+      </header>
+
+      <h1>Billing Statement</h1>
+
+      <div class="info-grid">
+        <div class="info-block">
+          <strong>Bill To:</strong><br />
+          Taylor Monroe<br />
+          455 Orchard Street<br />
+          Seattle, WA 98122
+        </div>
+        <div class="info-block">
+          <strong>Date:</strong> March 31, 2025<br />
+          <strong>Invoice #:</strong> BPS-7824
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Website Redesign</td>
+            <td>1</td>
+            <td>$1200</td>
+            <td>$1200</td>
+          </tr>
+          <tr>
+            <td>SEO Optimization</td>
+            <td>1</td>
+            <td>$400</td>
+            <td>$400</td>
+          </tr>
+          <tr>
+            <td>Website Redesign</td>
+            <td>1</td>
+            <td>$1200</td>
+            <td>$1200</td>
+          </tr>
+          <tr>
+            <td>SEO Optimization</td>
+            <td>1</td>
+            <td>$400</td>
+            <td>$400</td>
+          </tr>
+          <tr>
+            <td>Website Redesign</td>
+            <td>1</td>
+            <td>$1200</td>
+            <td>$1200</td>
+          </tr>
+          <tr>
+            <td>SEO Optimization</td>
+            <td>1</td>
+            <td>$400</td>
+            <td>$400</td>
+          </tr>
+          <tr>
+            <td>Website Redesign</td>
+            <td>1</td>
+            <td>$1200</td>
+            <td>$1200</td>
+          </tr>
+          <tr>
+            <td>SEO Optimization</td>
+            <td>1</td>
+            <td>$400</td>
+            <td>$400</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="total">Total: $1600.00</div>
+
+      <footer>
+        Thank you for choosing Bluepebble. We appreciate your business.
+      </footer>
+    </div>
+  </body>
+</html>

@@ -18,6 +18,10 @@ export const paths = {
           redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
         }`,
     },
+    resetPassword: {
+      path: "/auth/reset-password",
+      getHref: () => "/auth/reset-password",
+    },
   },
 
   app: {
@@ -36,6 +40,14 @@ export const paths = {
     profile: {
       path: "/app/profile",
       getHref: () => "/app/profile",
+    },
+    payouts: {
+      path: "/app/payouts",
+      getHref: () => `/app/payouts`,
+    },
+    payoutsClient: {
+      path: "/app/payouts/:clientId",
+      getHref: (clientId: string) => `/app/payouts/${clientId}`,
     },
   },
 } as const;

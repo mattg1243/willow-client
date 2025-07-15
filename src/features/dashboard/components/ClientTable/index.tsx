@@ -111,7 +111,9 @@ export function ClientTable({ clients }: ClientTableProps) {
     mutationFn: deleteClientsAction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+      selection.map((c) => {
+        queryClient.invalidateQueries({ queryKey: ["events", c] });
+      });
     },
   });
 

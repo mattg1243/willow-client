@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Minimalist Monochrome Billing Statement</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 40px;
+        background: #ffffff;
+        color: #111;
+      }
+
+      .statement {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        border-radius: 10px;
+        padding: 60px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 60px;
+      }
+
+      .logo {
+        font-size: 26px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .company-info {
+        font-size: 12px;
+        text-align: right;
+        line-height: 1.5;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 24px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        font-size: 14px;
+      }
+
+      .info-block {
+        width: 45%;
+        line-height: 1.6;
+      }
+
+      .table {
+        width: 100%;
+      }
+
+      .table-header,
+      .table-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+      }
+
+      .table-header {
+        font-weight: bold;
+        border-bottom: 1px solid #111;
+      }
+
+      .table-row:not(:last-child) {
+        border-bottom: 1px solid #ccc;
+      }
+
+      .col {
+        width: 25%;
+      }
+
+      .desc-col {
+        width: 40%;
+      }
+
+      .total {
+        text-align: right;
+        margin-top: 40px;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      footer {
+        margin-top: 60px;
+        text-align: center;
+        font-size: 11px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="statement">
+      <header>
+        <div class="logo">Nova</div>
+        <div class="company-info">
+          99 Gridline Dr<br />
+          Chicago, IL 60601<br />
+          contact@nova.io
+        </div>
+      </header>
+
+      <h1>Billing Statement</h1>
+
+      <div class="info-row">
+        <div class="info-block">
+          <strong>Billed To:</strong><br />
+          Alex Johnson<br />
+          321 Broadway Ave<br />
+          Denver, CO 80203
+        </div>
+        <div class="info-block">
+          <strong>Date:</strong> March 31, 2025<br />
+          <strong>Invoice:</strong> NOV-20250331
+        </div>
+      </div>
+
+      <div class="table">
+        <div class="table-header">
+          <div class="desc-col">Item</div>
+          <div class="col">Qty</div>
+          <div class="col">Rate</div>
+          <div class="col">Total</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">App Hosting (March)</div>
+          <div class="col">1</div>
+          <div class="col">$40</div>
+          <div class="col">$40</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">Extra Storage</div>
+          <div class="col">3</div>
+          <div class="col">$5</div>
+          <div class="col">$15</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">App Hosting (March)</div>
+          <div class="col">1</div>
+          <div class="col">$40</div>
+          <div class="col">$40</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">Extra Storage</div>
+          <div class="col">3</div>
+          <div class="col">$5</div>
+          <div class="col">$15</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">App Hosting (March)</div>
+          <div class="col">1</div>
+          <div class="col">$40</div>
+          <div class="col">$40</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">Extra Storage</div>
+          <div class="col">3</div>
+          <div class="col">$5</div>
+          <div class="col">$15</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">App Hosting (March)</div>
+          <div class="col">1</div>
+          <div class="col">$40</div>
+          <div class="col">$40</div>
+        </div>
+        <div class="table-row">
+          <div class="desc-col">Extra Storage</div>
+          <div class="col">3</div>
+          <div class="col">$5</div>
+          <div class="col">$15</div>
+        </div>
+      </div>
+
+      <div class="total">Total Due: $55.00</div>
+
+      <footer>
+        Payment is due within 7 days of receipt. Late payments may be subject to
+        fees.
+      </footer>
+    </div>
+  </body>
+</html>

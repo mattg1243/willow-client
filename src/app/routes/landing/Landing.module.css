@@ -1,11 +1,15 @@
 h1 {
-  font-family: 'Radio Canada', sans-serif;
-  font-size: clamp(24px, 20vw, 64px);
+  font-size: clamp(36px, 20vw, 72px);
+}
+
+h2 {
+  font-family: "Radio Canada", sans-serif;
+  font-size: clamp(24px, 12vw, 36px);
 }
 
 h3 {
-  font-family: 'Radio Canada', sans-serif;
-  font-size: clamp(16px, 5vw, 22px);
+  font-family: "Radio Canada", sans-serif;
+  font-size: clamp(16px, 5vw, 20px);
   max-width: 400px;
   text-align: center;
 }
@@ -15,23 +19,35 @@ h3 {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  top: 10vh;
+  background: radial-gradient(
+    circle at bottom center,
+    /* Center the gradient at the bottom */ rgba(144, 238, 144, 0.6) -50%,
+    /* Soft green */ rgba(255, 255, 255, 0) 60vh
+  );
+  background-repeat: no-repeat;
 }
 
 .cont * {
   margin: 16px;
 }
 
-.section1 {
+.willow-section {
+  height: 25vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.section {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 60vh;
+  height: 30vh;
   width: 100%;
-  background: radial-gradient(
-    circle at bottom center,
-    /* Center the gradient at the bottom */ rgba(144, 238, 144, 0.6) 0%,
-    /* Soft green */ rgba(255, 255, 255, 0) 60vh /* Fade to white */
-  );
-  background-repeat: no-repeat;
+}
+
+.green {
+  background-color: var(--willow-green);
 }

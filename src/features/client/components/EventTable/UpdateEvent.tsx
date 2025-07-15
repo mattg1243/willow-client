@@ -25,8 +25,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
-import { updateEvent, UpdateEventInput } from "@/lib/api/events";
+import { deleteEvents, updateEvent, UpdateEventInput } from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
+import { system } from "@/theme";
 import { type Event } from "@/types/api";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -96,17 +97,37 @@ export function UpdateEvent({
     }
   };
 
+  const deleteEvent = async () => {
+    try {
+      await deleteEvents([event.id], clientId);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onMutateSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["events", clientId] });
+    queryClient.invalidateQueries({ queryKey: ["client", clientId] });
+    queryClient.invalidateQueries({ queryKey: ["payouts", clientId] });
+  };
+
   const { mutateAsync: upadateEventMutation } = useMutation({
     mutationFn: submit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-      queryClient.invalidateQueries({ queryKey: ["client", clientId] });
-    },
+    onSuccess: onMutateSuccess,
+  });
+
+  const { mutateAsync: deleteEventMutation } = useMutation({
+    mutationFn: deleteEvent,
+    onSuccess: onMutateSuccess,
   });
 
   useEffect(() => {
     loadEventTypes();
   }, []);
+
+  useEffect(() => {
+    setEventState(event);
+  }, [event]);
 
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
@@ -169,6 +190,20 @@ export function UpdateEvent({
               />
             </InputGroup>
           </Field>
+          <Field label="Notes">
+            <InputGroup width={"100%"}>
+              <Input
+                type="text"
+                value={eventState.detail as string}
+                onChange={(e) =>
+                  setEventState({
+                    ...eventState,
+                    detail: e.target.value,
+                  })
+                }
+              />
+            </InputGroup>
+          </Field>
           <Field label="Rate">
             <InputGroup
               width={"100%"}
@@ -226,6 +261,15 @@ export function UpdateEvent({
             </DialogActionTrigger>
             <Button
               type="button"
+              background={system.token("colors.error.400")}
+              onClick={() => {
+                deleteEventMutation();
+              }}>
+              Delete event
+            </Button>
+            <Button
+              type="button"
+              background={system.token("colors.primary.500")}
               justifySelf="center"
               loading={loading}
               onClick={() => {

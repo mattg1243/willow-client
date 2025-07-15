@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { moneyToStr } from "../../../../utils/money";
 import { EventsTableActionBar } from "./ActionBar";
 import { AddEvent } from "./AddEvent";
-import { FilterButton, FilterOptions } from "./FilterButton";
+import { FilterBtn, FilterOptions } from "./FilterBtn";
 import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
 import { UpdateEvent } from "./UpdateEvent";
 
@@ -75,8 +75,9 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
   const { mutateAsync: deleteEventsMutation } = useMutation({
     mutationFn: deleteEventsAction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["events", client.id] });
       queryClient.invalidateQueries({ queryKey: ["client", client.id] });
+      queryClient.invalidateQueries({ queryKey: ["payouts", client.id] });
     },
   });
 
@@ -95,7 +96,7 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
             onOrderChange={setOrder}
           />
           <AddEvent clientId={client.id} clientRate={client.rate} />
-          <FilterButton filter={filter} setFilter={setFilter} />
+          <FilterBtn filter={filter} setFilter={setFilter} />
         </HStack>
         <Table.Root
           size="md"

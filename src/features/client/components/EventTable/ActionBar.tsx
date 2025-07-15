@@ -4,18 +4,9 @@ import {
   ActionBarSeparator,
 } from "@/components/ui/action-bar";
 import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { ActionBarContent, Input, Kbd } from "@chakra-ui/react";
+import { ActionBarContent, Kbd } from "@chakra-ui/react";
 import { useState } from "react";
+import { DeleteEvents } from "./DeleteEvents";
 
 export type EventTableActionBarProps = {
   open: boolean;
@@ -30,51 +21,14 @@ export function EventsTableActionBar({
   onDelete,
 }: EventTableActionBarProps) {
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-  const [deleteModalInput, setDeleteModalInput] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleDelete = async () => {
-    setLoading(true);
-    try {
-      await onDelete();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-      setDeleteModalOpen(false);
-      window.location.reload();
-    }
-  };
 
   return (
     <>
-      <DialogRoot open={deleteModalOpen}>
-        <DialogBackdrop />
-        <DialogContent>
-          <DialogCloseTrigger />
-          <DialogHeader>
-            <DialogTitle>Confirm delete</DialogTitle>
-          </DialogHeader>
-          <DialogBody spaceY={6}>
-            <p>
-              Deleting events is an irreversible action. To confirm, type
-              "delete" into the text box and click the delete button.
-            </p>
-            <Input
-              placeholder="delete"
-              onChange={(v) => setDeleteModalInput(v.target.value)}
-            />
-            <Button
-              disabled={deleteModalInput !== "delete"}
-              loading={loading}
-              onClick={handleDelete}>
-              Delete
-            </Button>
-          </DialogBody>
-          <DialogCloseTrigger />
-          <DialogFooter />
-        </DialogContent>
-      </DialogRoot>
+      <DeleteEvents
+        open={deleteModalOpen}
+        setOpen={setDeleteModalOpen}
+        onDelete={onDelete}
+      />
       <ActionBarRoot open={open}>
         <ActionBarContent>
           <ActionBarSelectionTrigger>

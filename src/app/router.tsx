@@ -6,7 +6,9 @@ import { DashboardRoute } from "./routes/app/Dashboard";
 import { ProfileRoute } from "./routes/app/Profile";
 import { LoginRoute } from "./routes/auth/Login";
 import { RegisterRoute } from "./routes/auth/Register";
+import { ResetPasswordRoute } from "./routes/auth/ResetPassword";
 import { LandingRoute } from "./routes/landing";
+import { PayoutsRoute } from "./routes/Payouts";
 
 const createAppRouter = () =>
   createBrowserRouter([
@@ -23,6 +25,10 @@ const createAppRouter = () =>
       element: <LoginRoute />,
     },
     {
+      path: paths.auth.resetPassword.path,
+      element: <ResetPasswordRoute />,
+    },
+    {
       path: paths.app.dashboard.getHref(),
       element: <DashboardRoute />,
     },
@@ -33,6 +39,14 @@ const createAppRouter = () =>
     {
       path: paths.app.profile.path,
       element: <ProfileRoute />,
+    },
+    {
+      path: paths.app.payouts.path,
+      element: <PayoutsRoute />,
+    },
+    {
+      path: paths.app.payoutsClient.path,
+      element: <PayoutsRoute />,
     },
   ]);
 

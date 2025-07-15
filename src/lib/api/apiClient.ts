@@ -5,7 +5,7 @@ import Axios, { InternalAxiosRequestConfig } from "axios";
 
 function authRequestInterceptor(config: InternalAxiosRequestConfig) {
   if (config.headers) {
-    config.headers.Accept = "application/json";
+    config.headers.Accept = ["application/json", "text"];
   }
 
   config.withCredentials = true;
@@ -22,14 +22,17 @@ api.interceptors.response.use(
     return res.data;
   },
   (err) => {
-    console.log(err);
-    const msg = err.response?.data || err.message;
+    console.error(err);
+    const msg = err.response?.data?.error || err.response?.data || err.message;
     toaster.create({
       title: msg || "An unknown error occurred",
       type: "error",
     });
 
-    if (err.response?.status === 401) {
+    if (
+      err.response?.status === 401 &&
+      window.location.pathname !== "/auth/login"
+    ) {
       localStorage.removeItem("willowUser");
       const searchParams = new URLSearchParams();
       const redirectTo =

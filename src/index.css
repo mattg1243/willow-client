@@ -9,12 +9,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --willow-green: #03b126;
 }
 
 .willow-cursive {
   font-family: "Pacifico", cursive;
   font-weight: 400;
   font-style: normal;
+  color: var(--willow-green);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
 }
 
 h1 {

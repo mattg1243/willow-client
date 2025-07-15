@@ -21,7 +21,8 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { DollarSign } from "lucide-react";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { BasicStatement, StatementData } from "./Basic";
+import { StatementData } from "./Basic";
+import { BasicTemplate } from "./templates/Basic/Basic";
 
 const statementTemplates: Array<{
   label: string;
@@ -31,7 +32,7 @@ const statementTemplates: Array<{
   {
     label: "Basic",
     description: "No frills statement",
-    template: BasicStatement,
+    template: BasicTemplate,
   },
   // {
   //   label: "Standard",

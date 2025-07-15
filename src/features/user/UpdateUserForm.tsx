@@ -74,7 +74,7 @@ export function UpdateUserForm() {
 
   if (user && userState && contactInfo)
     return (
-      <Card.Root width={480} marginBottom={24}>
+      <Card.Root width={480} marginBottom={24} shadow='lg'>
         <Card.Body gap="8">
           <Card.Title>Update your profile</Card.Title>
           <Field label="Personal info" gap={8}>

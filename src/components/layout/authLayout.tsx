@@ -34,6 +34,7 @@ export function AuthLayout(props: AuthLayoutProps) {
       <Header />
       <VStack
         minHeight="90vh"
+        minWidth="100vw"
         justifyContent="center"
         alignItems="center"
         overflow="scroll"

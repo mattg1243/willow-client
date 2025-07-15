@@ -44,6 +44,7 @@ export function AddEvent({
   const [userEventTypes, setUserEventTypes] =
     useState<ListCollection<{ label: string; value: string }>>();
   const [rate, setRate] = useState<number>(clientRate);
+  const [details, setDetails] = useState<string>();
   const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -95,6 +96,7 @@ export function AddEvent({
         date: date.toISOString(),
         duration: isPayment() ? 0 : duration,
         event_type_id: eventTypeId as string,
+        details,
         rate: isPayment() ? 0 : rate,
         amount: isPayment() ? amount : rate * duration,
       },
@@ -107,10 +109,10 @@ export function AddEvent({
         await createEvent(data);
         toaster.create({ title: "Event created", type: "success" });
         setOpen(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
         toaster.create({
-          title: "Error creating event: " + err.message || err,
+          title: "Error creating event: " + err?.message || err,
           type: "error",
         });
       } finally {
@@ -127,8 +129,9 @@ export function AddEvent({
   const { mutateAsync: addEventMutation } = useMutation({
     mutationFn: submit,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["events", clientId] });
       queryClient.invalidateQueries({ queryKey: ["client", clientId] });
+      queryClient.invalidateQueries({ queryKey: ["payouts", clientId] });
     },
   });
 
@@ -183,6 +186,14 @@ export function AddEvent({
                 value={isPayment() ? 0 : duration}
                 disabled={isPayment()}
                 onChange={(e) => setDuration(parseFloat(e.target.value))}
+              />
+            </InputGroup>
+          </Field>
+          <Field label="Notes">
+            <InputGroup width={"100%"}>
+              <Input
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
               />
             </InputGroup>
           </Field>

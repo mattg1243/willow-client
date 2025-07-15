@@ -3,13 +3,12 @@ import React from "react";
 import { Header } from "../Header";
 import { Head } from "../seo/Head";
 
-export function ProfileLayout({
-  title,
-  children,
-}: {
+type PayoutLayoutProps = {
   title: string;
   children: React.ReactNode;
-}) {
+};
+
+export function PayoutLayout({ title, children }: PayoutLayoutProps) {
   return (
     <>
       <Head title={title} />

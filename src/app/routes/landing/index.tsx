@@ -11,7 +11,7 @@ export function LandingRoute() {
   const { user } = useUser();
 
   const handleGetStarted = () => {
-    if (!user) {
+    if (user) {
       navigate(paths.app.dashboard.getHref());
     } else {
       navigate(paths.auth.register.getHref());
@@ -25,17 +25,26 @@ export function LandingRoute() {
   }, [user, navigate]);
 
   return (
-    <div className={styles.cont}>
+    <div>
       <Header />
-      <div className={styles.section1}>
-        <h1>With us, billing is easy</h1>
-        <h3>
-          Willow handles your business so you can focus on what you do best
-        </h3>
-        <Button bg="error.100" onClick={handleGetStarted}>
-          Try today for free
-        </Button>
+      <div className={styles.cont}>
+        <div className={styles["willow-section"]}>
+          <h1 className="willow-cursive">Willow</h1>
+        </div>
+        <div className={styles.section}>
+          <h2>With us, billing is easy</h2>
+          <h3>
+            Willow handles your business so you can focus on what you do best
+          </h3>
+          <Button bg="error.100" onClick={handleGetStarted}>
+            Try today for free
+          </Button>
+        </div>
+       
       </div>
+       <div className={styles.section}>
+          <h2>All the tools you need and none you don't.</h2>
+        </div>
     </div>
   );
 }

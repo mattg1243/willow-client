@@ -24,6 +24,10 @@ export const getEventsByClient = async (clientId: string): Promise<Event[]> => {
   return api.get("/event?clientId=" + clientId);
 };
 
+export const getEventsByPayout = async (payoutId: string): Promise<Event[]> => {
+  return api.get("/event?payoutId=" + payoutId);
+};
+
 export const getEvent = async (eventId: string): Promise<Event | null> => {
   return api.get("/event?id=" + eventId);
 };

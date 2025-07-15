@@ -64,7 +64,7 @@ export function RegisterForm() {
   };
 
   return (
-    <Card.Root maxWidth="480px">
+    <Card.Root maxWidth="480px" shadow='lg'>
       <Card.Body gap="8">
         <Card.Title>Create your account</Card.Title>
         <Field label="First name" required>
@@ -105,7 +105,7 @@ export function RegisterForm() {
       </Card.Body>
       <Card.Footer justifyContent="center">
         <VStack gap={4}>
-          <Button bg={"primary.300"} onClick={handleSubmit} loading={loading}>
+          <Button bg={"primary.400"} onClick={handleSubmit} loading={loading}>
             Sign up
           </Button>
           <Text>
