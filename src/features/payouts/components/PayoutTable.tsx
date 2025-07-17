@@ -1,7 +1,20 @@
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@/components/ui/pagination";
 import { deletePayout } from "@/lib/payouts";
 import { type Payout } from "@/types/api";
 import { moneyToStr } from "@/utils/money";
-import { HStack, IconButton, Spinner, Table, VStack } from "@chakra-ui/react";
+import {
+  HStack,
+  IconButton,
+  Spinner,
+  Table,
+  TableRow,
+  VStack,
+} from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Undo } from "lucide-react";
 import { useState } from "react";
@@ -18,6 +31,8 @@ export function PayoutTable({
   loading: boolean;
   clientId: string | undefined;
 }) {
+  const pageSize = 5;
+
   const [page, setPage] = useState<number>(1);
 
   const queryClient = useQueryClient();
@@ -25,7 +40,7 @@ export function PayoutTable({
   const startRange = (page - 1) * PAGE_SIZE;
   const endRange = startRange + PAGE_SIZE;
 
-  const visiblePayouts = payouts.slice();
+  const visiblePayouts = payouts.slice(startRange, endRange);
 
   const { mutateAsync: undoPayoutAsync } = useMutation({
     mutationFn: deletePayout,
@@ -63,7 +78,7 @@ export function PayoutTable({
         <Table.Body>
           {payouts ? (
             visiblePayouts.map((payout) => (
-              <Table.Row>
+              <Table.Row key={payout.id} height={100}>
                 {!clientId ? (
                   <Table.Cell>
                     {payout.client_fname} {payout.client_lname}
@@ -86,8 +101,20 @@ export function PayoutTable({
           ) : (
             <Spinner size={"lg"} />
           )}
+          {payouts.length < pageSize && <TableRow></TableRow>}
         </Table.Body>
       </Table.Root>
+      <PaginationRoot
+        count={payouts.length || 0}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={(e) => setPage(e.page)}>
+        <HStack wrap="wrap">
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
     </VStack>
   );
 }

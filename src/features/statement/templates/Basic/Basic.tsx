@@ -1,5 +1,5 @@
 import { moneyToStr } from "../../../../utils/money";
-import { StatementData } from "../../Basic";
+import { StatementData } from "../../types";
 import styles from "./Basic.module.css";
 
 export function BasicTemplate({
@@ -10,6 +10,10 @@ export function BasicTemplate({
   amount,
   notes,
 }: StatementData) {
+  const totalDue = events[events.length - 1]
+    ? events[events.length - 1].running_balance
+    : 0;
+
   return (
     <div className={styles.root}>
       <div className={styles.statement}>
@@ -56,15 +60,15 @@ export function BasicTemplate({
             </tr>
           </thead>
           <tbody>
-            {events.map((event, i) => (
-              <tr key={i}>
+            {events.map((event) => (
+              <tr key={event.id}>
                 <td className={styles.td}>
                   {new Date(event.date).toDateString()}
                 </td>
                 <td
                   className={
                     styles.td
-                  }>{`${event.event_type_title}${event.detail ? ` - ${event.detail}` : `${null}`}`}</td>
+                  }>{`${event.event_type_title}${event.statement_notes ? ` - ${event.statement_notes}` : `${null}`}`}</td>
                 <td className={styles.td}>{moneyToStr(event.amount)}</td>
                 <td className={styles.td}>
                   {moneyToStr(event.running_balance)}
@@ -75,8 +79,7 @@ export function BasicTemplate({
         </table>
 
         <div className={styles.total}>
-          Grand Total:{" "}
-          {amount || moneyToStr(events[events.length - 1].running_balance)}
+          Grand Total: {amount || moneyToStr(totalDue)}
         </div>
 
         {notes ? <div>Notes: {notes}</div> : null}

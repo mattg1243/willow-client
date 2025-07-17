@@ -1,6 +1,8 @@
 import {
   DialogBody,
+  DialogCloseTrigger,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogRoot,
   DialogTitle,
@@ -31,11 +33,12 @@ export function EventsBtn({ payoutId }: { payoutId: string }) {
       </DialogTrigger>
       <DialogContent ref={contentRef}>
         <DialogHeader>
-          <DialogTitle>Events from payout</DialogTitle>
+          <DialogCloseTrigger />
+          <DialogTitle marginTop={6}>Events from payout</DialogTitle>
         </DialogHeader>
-        <DialogBody spaceY={8} alignItems="center">
+        <DialogBody spaceY={12} spaceX={12} alignItems="center">
           These events are included in this payout:
-          <List.Root marginTop={12}>
+          <List.Root margin={12}>
             {events && !isLoading ? (
               events.map((event) => (
                 <List.Item>
@@ -49,6 +52,9 @@ export function EventsBtn({ payoutId }: { payoutId: string }) {
             )}
           </List.Root>
         </DialogBody>
+        <DialogFooter>
+          <Button onClick={() => setOpen(false)}>Close</Button>
+        </DialogFooter>
       </DialogContent>
     </DialogRoot>
   );

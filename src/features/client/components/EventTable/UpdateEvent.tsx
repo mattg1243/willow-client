@@ -18,7 +18,12 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select";
-import { createListCollection, Icon, ListCollection } from "@chakra-ui/react";
+import {
+  createListCollection,
+  Icon,
+  ListCollection,
+  Textarea,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -100,6 +105,10 @@ export function UpdateEvent({
   const deleteEvent = async () => {
     try {
       await deleteEvents([event.id], clientId);
+      toaster.create({
+        type: "success",
+        title: "Event deleted successfully.",
+      });
     } catch (err) {
       console.error(err);
     }
@@ -190,15 +199,32 @@ export function UpdateEvent({
               />
             </InputGroup>
           </Field>
-          <Field label="Notes">
+          <Field label="Statement Notes" helperText="Max 50 characters">
             <InputGroup width={"100%"}>
               <Input
+                maxLength={50}
                 type="text"
-                value={eventState.detail as string}
+                value={eventState.statement_notes as string}
                 onChange={(e) =>
                   setEventState({
                     ...eventState,
-                    detail: e.target.value,
+                    statement_notes: e.target.value,
+                  })
+                }
+              />
+            </InputGroup>
+          </Field>
+          {/* add max characters to 500 */}
+          <Field label="Event Notes" helperText="Max 500 characters">
+            <InputGroup width={"100%"}>
+              <Textarea
+                maxLength={500}
+                autoresize
+                value={eventState.event_notes as string}
+                onChange={(e) =>
+                  setEventState({
+                    ...eventState,
+                    event_notes: e.target.value,
                   })
                 }
               />
@@ -211,6 +237,7 @@ export function UpdateEvent({
               endElement={<>per hr</>}>
               <Input
                 type="number"
+                disabled={isPayment()}
                 value={isPayment() ? 0 : eventState.rate / 100}
                 onChange={(e) =>
                   setEventState({

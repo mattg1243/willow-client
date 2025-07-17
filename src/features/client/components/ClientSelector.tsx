@@ -16,6 +16,7 @@ export function ClientSelector({
 }: {
   clients: Client[];
   value?: string;
+  all?: boolean;
   onChange: (clientId: string) => void;
 }) {
   const clientsCollection = createListCollection({
@@ -25,6 +26,8 @@ export function ClientSelector({
     })),
   });
 
+  clientsCollection.items.push({ label: "All", value: "" });
+
   useEffect(() => {
     console.log("clientId in selector: ", value);
   });
@@ -33,7 +36,7 @@ export function ClientSelector({
     <SelectRoot
       collection={clientsCollection}
       multiple={false}
-      value={value ? [value] : []}
+      value={value ? [value] : ["All"]}
       onValueChange={(c) => {
         onChange(c.items[0].value);
       }}>

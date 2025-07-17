@@ -18,17 +18,23 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select";
-import { createListCollection, ListCollection } from "@chakra-ui/react";
+import {
+  createListCollection,
+  ListCollection,
+  Textarea,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
+import { Tooltip } from "@/components/ui/tooltip";
 import { createEvent } from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
+import { system } from "@/theme";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DollarSign, PlusIcon } from "lucide-react";
+import { DollarSign, Info, PlusIcon } from "lucide-react";
 
 export function AddEvent({
   clientId,
@@ -44,7 +50,8 @@ export function AddEvent({
   const [userEventTypes, setUserEventTypes] =
     useState<ListCollection<{ label: string; value: string }>>();
   const [rate, setRate] = useState<number>(clientRate);
-  const [details, setDetails] = useState<string>();
+  const [eventNotes, setEventNotes] = useState<string>("");
+  const [statementNotes, setStatementNotes] = useState<string>("");
   const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -96,7 +103,8 @@ export function AddEvent({
         date: date.toISOString(),
         duration: isPayment() ? 0 : duration,
         event_type_id: eventTypeId as string,
-        details,
+        event_notes: eventNotes,
+        statement_notes: statementNotes,
         rate: isPayment() ? 0 : rate,
         amount: isPayment() ? amount : rate * duration,
       },
@@ -109,7 +117,7 @@ export function AddEvent({
         await createEvent(data);
         toaster.create({ title: "Event created", type: "success" });
         setOpen(false);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error(err);
         toaster.create({
           title: "Error creating event: " + err?.message || err,
@@ -189,11 +197,45 @@ export function AddEvent({
               />
             </InputGroup>
           </Field>
-          <Field label="Notes">
+          <Field
+            label={
+              <>
+                Statement Notes
+                <Tooltip
+                  openDelay={250}
+                  closeDelay={250}
+                  content="These notes will appear on your statements next to the associated event.">
+                  <Info size={16} />
+                </Tooltip>
+              </>
+            }
+            helperText="Max characters 50">
             <InputGroup width={"100%"}>
               <Input
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
+                maxLength={50}
+                value={statementNotes}
+                onChange={(e) => setStatementNotes(e.target.value)}
+              />
+            </InputGroup>
+          </Field>
+          <Field
+            label={
+              <>
+                Event Notes
+                <Tooltip
+                  openDelay={250}
+                  closeDelay={250}
+                  content="These notes will not appear on you statements and are only visible to you.">
+                  <Info size={16} />
+                </Tooltip>
+              </>
+            }
+            helperText="Max characters 500">
+            <InputGroup width={"100%"}>
+              <Textarea
+                maxLength={500}
+                value={eventNotes}
+                onChange={(e) => setEventNotes(e.target.value)}
               />
             </InputGroup>
           </Field>
@@ -233,6 +275,7 @@ export function AddEvent({
             <Button
               type="button"
               justifySelf="center"
+              background={system.token("colors.primary.500")}
               loading={loading}
               onClick={() => {
                 addEventMutation();

@@ -52,7 +52,8 @@ export type Event = Entity<{
   duration: number;
   event_type_id: string;
   event_type_title: string;
-  detail: string | null | undefined;
+  event_notes: string | null;
+  statement_notes: string | null;
   rate: number;
   amount: number;
   running_balance: number;

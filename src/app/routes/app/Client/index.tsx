@@ -30,7 +30,7 @@ export function ClientRoute() {
     enabled: !!clientId,
   });
 
-  const { data: payout, isLoading: payoutLoading } = useQuery({
+  const { data: payout } = useQuery({
     queryKey: ["payouts", clientId],
     queryFn: () => makePayout(clientId as string),
     enabled: !!clientId,
