@@ -1,37 +1,40 @@
+import { Event } from "@/types/api";
 import { moneyToStr } from "../../../../utils/money";
 import { StatementData } from "../../types";
 import styles from "./Basic.module.css";
 
-export function BasicTemplate({
+export function BasicTemplateCover({
   events,
   client,
   user,
   userContactInfo,
-  amount,
   notes,
 }: StatementData) {
-  const totalDue = events[events.length - 1]
-    ? events[events.length - 1].running_balance
-    : 0;
-
   return (
     <div className={styles.root}>
       <div className={styles.statement}>
         <header className={styles.header}>
-          <div className={styles.logo}>
-            {user.nameforheader || `${user.fname} ${user.lname}`}
-          </div>
           <div className={styles.companyInfo}>
-            {userContactInfo.street}
-            <br />
+            {user.nameforheader || `${user.fname} ${user.lname}`}
+            {userContactInfo.street ? (
+              <>
+                <br />
+                {userContactInfo.street}
+              </>
+            ) : null}
             {userContactInfo.city ? (
               <>
+                <br />
                 {userContactInfo.city}, {userContactInfo.state}{" "}
                 {userContactInfo.zip}
               </>
             ) : null}
-            <br />
-            {userContactInfo.phone ?? null}
+            {userContactInfo.phone ? (
+              <>
+                <br />
+                {userContactInfo.phone}
+              </>
+            ) : null}
           </div>
         </header>
 
@@ -43,8 +46,9 @@ export function BasicTemplate({
             <br />
             {`${client.fname} ${client.lname}`}
           </div>
-          <div className={`${styles.infoBlock}`}>
-            <strong>Statement Date:</strong> {new Date().toDateString()}
+          <div className={`${styles.infoBlock}`} style={{ textAlign: "end" }}>
+            <strong>Statement Date:</strong> <br />
+            {new Date().toLocaleDateString()}
             <br />
             {/* <strong>Statement ID:</strong> INV-000123 */}
           </div>
@@ -62,15 +66,18 @@ export function BasicTemplate({
           <tbody>
             {events.map((event) => (
               <tr key={event.id}>
-                <td className={styles.td}>
-                  {new Date(event.date).toDateString()}
+                <td className={styles.td} style={{ width: "40mm" }}>
+                  {new Date(event.date).toLocaleDateString()}
                 </td>
-                <td
-                  className={
-                    styles.td
-                  }>{`${event.event_type_title}${event.statement_notes ? ` - ${event.statement_notes}` : `${null}`}`}</td>
-                <td className={styles.td}>{moneyToStr(event.amount)}</td>
-                <td className={styles.td}>
+                <td className={styles.td} style={{ width: "90mm" }}>
+                  <strong>{`${event.event_type_title}`}</strong>
+                  <br />
+                  {event.statement_notes ? event.statement_notes : ""}
+                </td>
+                <td className={styles.td} style={{ width: "30mm" }}>
+                  {moneyToStr(event.amount)}
+                </td>
+                <td className={styles.td} style={{ width: "30mm" }}>
                   {moneyToStr(event.running_balance)}
                 </td>
               </tr>
@@ -78,15 +85,66 @@ export function BasicTemplate({
           </tbody>
         </table>
 
-        <div className={styles.total}>
-          Grand Total: {amount || moneyToStr(totalDue)}
-        </div>
-
         {notes ? <div>Notes: {notes}</div> : null}
 
         <footer className={styles.footer}>
           This is a system-generated document. For any questions, please contact
           the sender.
+          <br />
+          Made using willowapp.io
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+export function BasicTemplatePage({
+  events,
+  total,
+}: {
+  events: Event[];
+  total?: number;
+}) {
+  return (
+    <div className={styles.root}>
+      <div className={styles.statement}>
+        <table className={styles.table}>
+          <thead>
+            <tr className={styles.thead}>
+              <th className={styles.th}>Date</th>
+              <th className={styles.th}>Event</th>
+              <th className={styles.th}>Amount</th>
+              <th className={styles.th}>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {events.map((event) => (
+              <tr key={event.id}>
+                <td className={styles.td} style={{ width: "40mm" }}>
+                  {new Date(event.date).toDateString()}
+                </td>
+                <td className={styles.td} style={{ width: "90mm" }}>
+                  <strong>{event.event_type_title}</strong>
+                  <br />
+                  {event.statement_notes ?? ""}
+                </td>
+                <td className={styles.td} style={{ width: "30mm" }}>
+                  {moneyToStr(event.amount)}
+                </td>
+                <td className={styles.td} style={{ width: "30mm" }}>
+                  {moneyToStr(event.running_balance)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className={styles.total}>
+          Grand Total: {total ? moneyToStr(total) : "$0.00"}
+        </div>
+        <footer className={styles.footer}>
+          Continued from previous page
+          <br />
+          Made using willowapp.io
         </footer>
       </div>
     </div>

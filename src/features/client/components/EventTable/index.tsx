@@ -137,7 +137,7 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                     <Table.Cell>{event.event_type_title}</Table.Cell>
                     <Table.Cell>{moneyToStr(event.amount)}</Table.Cell>
                     <Table.Cell>
-                      {new Date(event.date).toDateString()}
+                      {new Date(event.date).toLocaleDateString()}
                     </Table.Cell>
                     <Table.Cell>
                       <Checkbox checked={event.paid} size="sm" readOnly />

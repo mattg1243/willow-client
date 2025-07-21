@@ -43,7 +43,7 @@ export function EventsBtn({ payoutId }: { payoutId: string }) {
               events.map((event) => (
                 <List.Item>
                   {event.event_type_title} on{" "}
-                  {new Date(event.date).toDateString()} for{" "}
+                  {new Date(event.date).toLocaleDateString()} for{" "}
                   {moneyToStr(event.amount)}
                 </List.Item>
               ))

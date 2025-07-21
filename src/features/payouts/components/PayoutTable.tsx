@@ -85,7 +85,7 @@ export function PayoutTable({
                   </Table.Cell>
                 ) : null}
                 <Table.Cell>{moneyToStr(payout.amount)}</Table.Cell>
-                <Table.Cell>{new Date(payout.date).toDateString()}</Table.Cell>
+                <Table.Cell>{new Date(payout.date).toLocaleDateString()}</Table.Cell>
                 <Table.Cell>
                   <EventsBtn payoutId={payout.id} />
                 </Table.Cell>

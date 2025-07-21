@@ -21,18 +21,21 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { DollarSign } from "lucide-react";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { BasicTemplate } from "./templates/Basic/Basic";
+import { chunkEvents } from "./templates";
+import { BasicTemplateCover, BasicTemplatePage } from "./templates/Basic/Basic";
 import { StatementData } from "./types";
 
 const statementTemplates: Array<{
   label: string;
   description: string;
-  template: (data: StatementData) => ReactNode;
+  templateCover: (data: StatementData) => ReactNode;
+  templatePage: (data: { events: Event[] }) => ReactNode;
 }> = [
   {
     label: "Basic",
     description: "No frills statement",
-    template: BasicTemplate,
+    templateCover: BasicTemplateCover,
+    templatePage: BasicTemplatePage,
   },
   // {
   //   label: "Standard",
@@ -81,14 +84,16 @@ export function StatementBtn({
   const { user } = useUser();
 
   const contentRef = useRef<HTMLDivElement>(null);
-  const hiddenStatementRef = useRef<HTMLDivElement>(null);
+  const pageRefs = useRef<HTMLDivElement[]>([]);
 
-  const SelectedTemplate =
-    selectedStatement !== undefined
-      ? statementTemplates[selectedStatement].template
-      : null;
+  // const SelectedTemplate =
+  //   selectedStatement !== undefined
+  //     ? statementTemplates[selectedStatement].template
+  //     : null;
+  const SelectedTemplateCover = BasicTemplateCover;
+  const SelectedTemplatePage = BasicTemplatePage;
 
-  const reslovedEvents: Event[] = events.filter((e) => {
+  const resolvedEvents: Event[] = events.filter((e) => {
     const eventDate = new Date(e.date);
     if (startDate && endDate) {
       return eventDate >= startDate && endDate >= eventDate;
@@ -101,6 +106,12 @@ export function StatementBtn({
     }
   });
 
+  const eventChunks = chunkEvents(resolvedEvents);
+
+  const totalDue = events[events.length - 1]
+    ? events[events.length - 1].running_balance
+    : 0;
+
   const validateDateRange = () => {
     if (startDate && endDate) {
       return startDate <= endDate;
@@ -112,46 +123,53 @@ export function StatementBtn({
   };
 
   const handleCreatePdf = async () => {
-    const hiddenStatement = hiddenStatementRef.current;
-    console.log(startDate, endDate);
-    if (hiddenStatement) {
-      setLoading(true);
-      try {
-        hiddenStatement.style.display = "block";
-        const canvas = await html2canvas(hiddenStatement, {
-          useCORS: true, // Handle cross-origin issues
-          allowTaint: true, // Allow tainted images
-          scale: 2, // Improve image resolution
-        });
-        const pdf = new jsPDF();
+    if (!pageRefs.current.length) return;
 
-        document.body.appendChild(canvas);
+    setLoading(true);
+
+    const pdf = new jsPDF();
+
+    try {
+      for (let i = 0; i < pageRefs.current.length; i++) {
+        const el = pageRefs.current[i];
+        if (!el) continue;
+
+        // Temporarily make element visible
+        el.style.display = "block";
+
+        const canvas = await html2canvas(el, {
+          useCORS: true,
+          allowTaint: true,
+          scale: 2,
+          backgroundColor: "#ffffff",
+        });
 
         const imgData = canvas.toDataURL("image/png");
-        console.log("Generated image data:", imgData);
         const imgProps = pdf.getImageProperties(imgData);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
+        if (i > 0) pdf.addPage();
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${client.fname}${client.lname}.pdf`);
-        document.body.removeChild(canvas);
-        hiddenStatement.style.display = "none";
-      } catch (err: any) {
-        toaster.create({
-          type: "error",
-          title:
-            "An error occurred generating your statment: " + err?.message || "",
-        });
-        console.error(err);
-      } finally {
-        setLoading(false);
+
+        el.style.display = "none";
       }
+
+      pdf.save(`${client.fname}${client.lname}.pdf`);
+    } catch (err: any) {
+      toaster.create({
+        type: "error",
+        title:
+          "An error occurred generating your statement: " +
+          (err?.message || ""),
+      });
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
-
   if (!user || !contactInfo) {
-    return <>its b</>;
+    return <>No user or contact info provided.</>;
   }
 
   return (
@@ -228,26 +246,45 @@ export function StatementBtn({
           <DialogCloseTrigger />
         </DialogContent>
       </DialogRoot>
-      <div
-        ref={hiddenStatementRef}
-        style={{
-          display: "none",
-          position: "absolute",
-          top: "-9999px",
-          left: "-9999px",
-        }}
-        id="hidden-statement">
-        {SelectedTemplate && user && contactInfo ? (
-          <SelectedTemplate
-            events={reslovedEvents}
-            client={client}
-            user={user}
-            userContactInfo={contactInfo}
-            amount={amount}
-            notes={notes}
-          />
-        ) : null}
-      </div>
+      {user && contactInfo ? (
+        // <SelectedTemplate
+        //   events={reslovedEvents}
+        //   client={client}
+        //   user={user}
+        //   userContactInfo={contactInfo}
+        //   amount={amount}
+        //   notes={notes}
+        // />
+        <>
+          {eventChunks.map((chunk, i) => (
+            <div
+              ref={(el) => (pageRefs.current[i] = el!)}
+              style={{
+                display: "none",
+                position: "absolute",
+                top: "-9999px",
+                left: "-9999px",
+              }}
+              id="hidden-statement">
+              {i === 0 ? (
+                <SelectedTemplateCover
+                  events={chunk}
+                  client={client}
+                  user={user}
+                  userContactInfo={contactInfo}
+                  amount={amount}
+                  notes={notes}
+                />
+              ) : (
+                <SelectedTemplatePage
+                  events={chunk}
+                  total={i === eventChunks.length - 1 ? totalDue : undefined}
+                />
+              )}
+            </div>
+          ))}
+        </>
+      ) : null}
     </>
   );
 }
