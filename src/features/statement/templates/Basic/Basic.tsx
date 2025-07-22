@@ -9,6 +9,7 @@ export function BasicTemplateCover({
   user,
   userContactInfo,
   notes,
+  amountDue,
 }: StatementData) {
   return (
     <div className={styles.root}>
@@ -16,6 +17,12 @@ export function BasicTemplateCover({
         <header className={styles.header}>
           <div className={styles.companyInfo}>
             {user.nameforheader || `${user.fname} ${user.lname}`}
+            {user.license ? (
+              <>
+                <br />
+                {user.license}
+              </>
+            ) : null}
             {userContactInfo.street ? (
               <>
                 <br />
@@ -46,6 +53,13 @@ export function BasicTemplateCover({
             <br />
             {`${client.fname} ${client.lname}`}
           </div>
+          <div
+            className={`${styles.infoBlock}`}
+            style={{ textAlign: "center", color: "blue" }}>
+            <strong>Amount Due:</strong>
+            <br />
+            {moneyToStr(amountDue)}
+          </div>
           <div className={`${styles.infoBlock}`} style={{ textAlign: "end" }}>
             <strong>Statement Date:</strong> <br />
             {new Date().toLocaleDateString()}
@@ -59,33 +73,39 @@ export function BasicTemplateCover({
             <tr className={styles.thead}>
               <th className={styles.th}>Date</th>
               <th className={styles.th}>Event</th>
-              <th className={styles.th}>Amount</th>
-              <th className={styles.th}>Balance</th>
+              <th className={styles.th} style={{ textAlign: "right" }}>
+                Amount
+              </th>
+              <th className={styles.th} style={{ textAlign: "right" }}>
+                Retainer Balance
+              </th>
             </tr>
           </thead>
           <tbody>
             {events.map((event) => (
               <tr key={event.id}>
-                <td className={styles.td} style={{ width: "40mm" }}>
+                <td className={styles.td} style={{ width: ".65in" }}>
                   {new Date(event.date).toLocaleDateString()}
                 </td>
                 <td className={styles.td} style={{ width: "90mm" }}>
                   <strong>{`${event.event_type_title}`}</strong>
-                  <br />
-                  {event.statement_notes ? event.statement_notes : ""}
+                  {event.statement_notes ? " - " + event.statement_notes : ""}
                 </td>
-                <td className={styles.td} style={{ width: "30mm" }}>
+                <td
+                  className={styles.td}
+                  style={{ width: ".65in", textAlign: "right" }}>
                   {moneyToStr(event.amount)}
                 </td>
-                <td className={styles.td} style={{ width: "30mm" }}>
+                <td
+                  className={styles.td}
+                  style={{ width: "1in", textAlign: "right" }}>
                   {moneyToStr(event.running_balance)}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {notes ? <div>Notes: {notes}</div> : null}
+        {notes ? <div className={styles.notes}>Notes: {notes}</div> : null}
 
         <footer className={styles.footer}>
           This is a system-generated document. For any questions, please contact
@@ -98,13 +118,7 @@ export function BasicTemplateCover({
   );
 }
 
-export function BasicTemplatePage({
-  events,
-  total,
-}: {
-  events: Event[];
-  total?: number;
-}) {
+export function BasicTemplatePage({ events }: { events: Event[] }) {
   return (
     <div className={styles.root}>
       <div className={styles.statement}>
@@ -113,8 +127,12 @@ export function BasicTemplatePage({
             <tr className={styles.thead}>
               <th className={styles.th}>Date</th>
               <th className={styles.th}>Event</th>
-              <th className={styles.th}>Amount</th>
-              <th className={styles.th}>Balance</th>
+              <th className={styles.th} style={{ textAlign: "right" }}>
+                Amount
+              </th>
+              <th className={styles.th} style={{ textAlign: "right" }}>
+                Balance
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -138,9 +156,6 @@ export function BasicTemplatePage({
             ))}
           </tbody>
         </table>
-        <div className={styles.total}>
-          Grand Total: {total ? moneyToStr(total) : "$0.00"}
-        </div>
         <footer className={styles.footer}>
           Continued from previous page
           <br />

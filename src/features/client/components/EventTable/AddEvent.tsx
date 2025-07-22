@@ -96,6 +96,16 @@ export function AddEvent({
     }
   };
 
+  const clearInput = () => {
+    setDate(new Date());
+    setDuration(0);
+    setEventTypeId(undefined);
+    setRate(clientRate);
+    setEventNotes("");
+    setStatementNotes("");
+    setAmount(undefined);
+  };
+
   const submit = async () => {
     const data = {
       event: {
@@ -115,6 +125,7 @@ export function AddEvent({
 
       try {
         await createEvent(data);
+        clearInput();
         toaster.create({ title: "Event created", type: "success" });
         setOpen(false);
       } catch (err: any) {
@@ -191,7 +202,7 @@ export function AddEvent({
             <InputGroup width={"100%"} endElement={<>hr</>}>
               <Input
                 type="number"
-                value={isPayment() ? 0 : duration}
+                value={isPayment() ? 0 : duration === 0 ? undefined : duration}
                 disabled={isPayment()}
                 onChange={(e) => setDuration(parseFloat(e.target.value))}
               />

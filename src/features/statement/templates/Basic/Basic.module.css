@@ -2,18 +2,19 @@
   font-family: "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 40px;
-  width: 100%;
+  width: 8.5in;
+  height: 11in;
   background: #fff;
   color: #333;
 }
 
 .statement {
-  width: 190mm;
-  margin: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 10.25in;
   background: white;
   border-radius: 10px;
-  padding: 20mm;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .header {
@@ -36,7 +37,7 @@
 .title {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 32px;
+  font-size: 24px;
 }
 
 .infoGrid {
@@ -59,8 +60,13 @@
 .th,
 .td {
   border: 1px solid #ccc;
-  padding: 12px;
+  padding: 6px;
+  font-size: 12px;
   text-align: left;
+}
+
+.th {
+  font-weight: bold;
 }
 
 .thead {
@@ -70,13 +76,20 @@
 .total {
   text-align: right;
   margin-top: 20px;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
 }
 
+.notes {
+  font-size: 14px;
+  margin: 48px 0;
+}
+
 .footer {
-  margin-top: 20px;
+  margin-top: auto;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   color: #777;
+  display: flex;
+  justify-content: center;
 }

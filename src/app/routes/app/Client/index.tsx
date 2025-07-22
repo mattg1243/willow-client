@@ -58,7 +58,7 @@ export function ClientRoute() {
             ) : null}
             <HStack spaceX={12}>
               <VStack>
-                <h3>Balance</h3>
+                <h3>Retainer Balance</h3>
                 <h3>{moneyToStr(client.balance)}</h3>
                 <UpdateClient client={client} />
                 <StatementBtn events={events || []} client={client} />

@@ -36,7 +36,7 @@ export function ClientSelector({
     <SelectRoot
       collection={clientsCollection}
       multiple={false}
-      value={value ? [value] : ["All"]}
+      value={value ? [value] : [""]}
       onValueChange={(c) => {
         onChange(c.items[0].value);
       }}>

@@ -5,6 +5,7 @@ export type StatementData = {
   client: Client;
   user: User;
   userContactInfo: UserContactInfo;
-  amount?: number;
+  amountDue: number;
+  currentBalance?: number;
   notes?: string;
 };

@@ -108,7 +108,7 @@ export function StatementBtn({
 
   const eventChunks = chunkEvents(resolvedEvents);
 
-  const totalDue = events[events.length - 1]
+  const retainerBalance = events[events.length - 1]
     ? events[events.length - 1].running_balance
     : 0;
 
@@ -127,7 +127,10 @@ export function StatementBtn({
 
     setLoading(true);
 
-    const pdf = new jsPDF();
+    const pdf = new jsPDF({
+      unit: "in",
+      format: [8.5, 11],
+    });
 
     try {
       for (let i = 0; i < pageRefs.current.length; i++) {
@@ -145,9 +148,9 @@ export function StatementBtn({
         });
 
         const imgData = canvas.toDataURL("image/png");
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        // const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = 8.5;
+        const pdfHeight = 11;
 
         if (i > 0) pdf.addPage();
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
@@ -196,7 +199,10 @@ export function StatementBtn({
                 );
               })}
             </SimpleGrid>
-            <Field label="Date range" invalid={validateDateRange()}>
+            <Field
+              label="Date range"
+              helperText="Leave blank if you want to include all dates."
+              invalid={validateDateRange()}>
               <HStack width="100%">
                 <Input
                   type="date"
@@ -272,14 +278,14 @@ export function StatementBtn({
                   client={client}
                   user={user}
                   userContactInfo={contactInfo}
-                  amount={amount}
+                  currentBalance={
+                    eventChunks.length === 1 ? retainerBalance : undefined
+                  }
+                  amountDue={amount || 0}
                   notes={notes}
                 />
               ) : (
-                <SelectedTemplatePage
-                  events={chunk}
-                  total={i === eventChunks.length - 1 ? totalDue : undefined}
-                />
+                <SelectedTemplatePage events={chunk} />
               )}
             </div>
           ))}

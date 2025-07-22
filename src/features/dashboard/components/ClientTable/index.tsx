@@ -166,6 +166,7 @@ export function ClientTable({ clients }: ClientTableProps) {
             <Table.ColumnHeader textAlign="start" width={200}>
               Client
             </Table.ColumnHeader>
+            <Table.ColumnHeader />
             <Table.ColumnHeader textAlign="end">Balance</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -207,13 +208,15 @@ export function ClientTable({ clients }: ClientTableProps) {
                       ) : null}
                     </span>
                   </Table.Cell>
-                  <Table.Cell textAlign="end">
+                  <Table.Cell textAlign="right">
                     {client.balance <= client.balancenotifythreshold ? (
                       <Badge variant="solid" bg="error.500" marginX={6}>
                         <AlertCircleIcon size={12} />
                         Low
                       </Badge>
                     ) : null}
+                  </Table.Cell>
+                  <Table.Cell textAlign="end">
                     {moneyToStr(client.balance)}
                   </Table.Cell>
                 </Table.Row>
