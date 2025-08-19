@@ -1,0 +1,10 @@
+.infoCont {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+}

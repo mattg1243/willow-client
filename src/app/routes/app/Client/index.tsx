@@ -3,7 +3,7 @@ import { paths } from "@/config/paths";
 import { EventsTable } from "@/features/client/components/EventTable";
 import { UpdateClient } from "@/features/client/components/UpdateClient";
 import { StatementBtn } from "@/features/statement";
-import { getClient } from "@/lib/api/clients";
+import { useClient } from "@/hooks/useClient";
 import { getEventsByClient } from "@/lib/api/events";
 import { ProtectedRoute } from "@/lib/auth";
 import { makePayout } from "@/lib/payouts";
@@ -13,16 +13,13 @@ import { useQuery } from "@tanstack/react-query";
 import { BookMarked } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Payout } from "../../../../features/payouts/components/index";
+import styles from "./Client.module.css";
 
 export function ClientRoute() {
   const { clientId } = useParams();
   const navigate = useNavigate();
 
-  const { data: client } = useQuery({
-    queryKey: ["client", clientId],
-    queryFn: () => getClient(clientId as string),
-    enabled: !!clientId,
-  });
+  const { data: client } = useClient(clientId as string);
 
   const { data: events, isLoading: eventsLoading } = useQuery({
     queryKey: ["events", clientId],
@@ -37,13 +34,17 @@ export function ClientRoute() {
   });
 
   const eventsCount = payout?.events ? payout.events.length : 0;
+  const totalBillings = events?.reduce((prev, curr) => prev + curr.amount, 0);
 
   return (
     <ProtectedRoute>
       {clientId && client ? (
         <ClientLayout title={`${client.fname} ${client.lname}`}>
           <VStack spaceY={4}>
-            <h1>{client.fname + " " + client.lname}</h1>
+            <HStack marginLeft={12}>
+              <h1>{client.fname + " " + client.lname}</h1>
+              <UpdateClient client={client} />
+            </HStack>
             {client.isarchived ? (
               <h4>
                 Archived
@@ -56,27 +57,40 @@ export function ClientRoute() {
                 />
               </h4>
             ) : null}
-            <HStack spaceX={12}>
-              <VStack>
-                <h3>Retainer Balance</h3>
-                <h3>{moneyToStr(client.balance)}</h3>
-                <UpdateClient client={client} />
-                <StatementBtn events={events || []} client={client} />
+            <HStack spaceX={12} justifyContent="space-around" width="80%">
+              <VStack alignItems="flex-start" flex={1}>
+                <div className={styles.infoCont}>
+                  <div className={styles.infoRow}>
+                    <h3>Retainer Balance:</h3>
+                    <strong style={{ alignSelf: "end" }}>
+                      <h3>{moneyToStr(client.balance)}</h3>
+                    </strong>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <h3>Available Payout:</h3>
+                    <strong>
+                      <h3>{moneyToStr(payout?.payout as number)}</h3>
+                    </strong>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <h3>Total Billings:</h3>
+                    <h3>
+                      <strong>{moneyToStr(totalBillings || 0)}</strong>
+                    </h3>
+                  </div>
+                </div>
               </VStack>
-              <VStack>
-                <h3>Payable</h3>
-                <p>
-                  {moneyToStr(payout?.payout as number)},{" "}
-                  {`${eventsCount} ${eventsCount !== 1 ? "events" : "event"}`}
-                </p>
+              <VStack flex={1} alignItems="end">
                 <Payout payout={payout} />
                 <Button
                   variant="outline"
+                  width="148px"
                   onClick={() =>
                     navigate(paths.app.payoutsClient.getHref(clientId))
                   }>
-                  View payouts
+                  <h3>Payouts</h3>
                 </Button>
+                <StatementBtn events={events || []} client={client} />
               </VStack>
             </HStack>
             <EventsTable

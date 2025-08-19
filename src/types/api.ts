@@ -76,3 +76,9 @@ export type Payout = Entity<{
   client_fname: string;
   client_lname: string | null | undefined;
 }>;
+
+export type PaymentType = {
+  id: number;
+  user_id: string;
+  name: string;
+};

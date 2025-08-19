@@ -31,6 +31,7 @@ export function DeleteEvents({
     setLoading(true);
     try {
       await onDelete();
+      setOpen(false);
     } catch (err) {
       console.error(err);
     } finally {

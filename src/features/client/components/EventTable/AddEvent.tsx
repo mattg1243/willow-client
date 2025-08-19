@@ -11,16 +11,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "@/components/ui/select";
-import {
   createListCollection,
+  HStack,
   ListCollection,
+  Select,
   Textarea,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
@@ -29,9 +23,11 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
 import { Tooltip } from "@/components/ui/tooltip";
+import { usePaymentTypes } from "@/hooks/usePaymentTypes";
 import { createEvent } from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
 import { system } from "@/theme";
+import { EventType, PaymentType } from "@/types/api";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, Info, PlusIcon } from "lucide-react";
@@ -43,12 +39,20 @@ export function AddEvent({
   clientId: string;
   clientRate: number;
 }) {
+  type CollectionItem = {
+    label: string;
+    value: string;
+  };
+
   const [open, setOpen] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const [duration, setDuration] = useState<number>(0);
   const [eventTypeId, setEventTypeId] = useState<string>();
+  const [paymentTypeId, setPaymentTypeId] = useState<number>();
   const [userEventTypes, setUserEventTypes] =
-    useState<ListCollection<{ label: string; value: string }>>();
+    useState<ListCollection<CollectionItem>>();
+  const [userPaymentTypes, setUserPaymentTypes] =
+    useState<ListCollection<CollectionItem>>();
   const [rate, setRate] = useState<number>(clientRate);
   const [eventNotes, setEventNotes] = useState<string>("");
   const [statementNotes, setStatementNotes] = useState<string>("");
@@ -57,26 +61,13 @@ export function AddEvent({
 
   const queryClient = useQueryClient();
   const contentRef = useRef<HTMLDivElement>(null);
+  const { data: paymentTypes } = usePaymentTypes();
+
+  const eventTypeMap = useRef<Record<string, EventType>>({});
 
   const isPayment = () => {
-    return eventTypeId === "4d9e9d8f-5f9f-4f9a-9b7d-7b5cf3e53d2e";
-  };
-
-  const loadEventTypes = async () => {
-    setLoading(true);
-    try {
-      const eventTypes = await getEventTypes();
-      const eventTypesList = createListCollection({
-        items: eventTypes.map((e) => {
-          return { label: e.title, value: e.id };
-        }),
-      });
-      setUserEventTypes(eventTypesList);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    if (!eventTypeId) return false;
+    return !eventTypeMap.current[eventTypeId].charge;
   };
 
   const validateInput = (): boolean => {
@@ -113,13 +104,13 @@ export function AddEvent({
         date: date.toISOString(),
         duration: isPayment() ? 0 : duration,
         event_type_id: eventTypeId as string,
+        payment_type_id: paymentTypeId,
         event_notes: eventNotes,
         statement_notes: statementNotes,
         rate: isPayment() ? 0 : rate,
         amount: isPayment() ? amount : rate * duration,
       },
     };
-    console.log(data);
     if (validateInput()) {
       setLoading(true);
 
@@ -155,8 +146,33 @@ export function AddEvent({
   });
 
   useEffect(() => {
+    const loadEventTypes = async () => {
+      setLoading(true);
+      try {
+        const eventTypes = await getEventTypes();
+        eventTypes.forEach((et) => {
+          eventTypeMap.current[et.id] = et;
+        });
+        const eventTypesList = createListCollection({
+          items: eventTypes.map((e) => {
+            return { label: e.title, value: e.id };
+          }),
+        });
+        const paymentTypesList = createListCollection({
+          items: (paymentTypes as PaymentType[]).map((pt) => {
+            return { label: pt.name, value: String(pt.id) };
+          }),
+        });
+        setUserEventTypes(eventTypesList);
+        setUserPaymentTypes(paymentTypesList);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
     loadEventTypes();
-  }, []);
+  }, [paymentTypes]);
 
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
@@ -171,27 +187,64 @@ export function AddEvent({
           <DialogTitle>Add Event</DialogTitle>
         </DialogHeader>
         <DialogBody spaceY={8} alignItems="center">
-          <SelectRoot
-            collection={userEventTypes as ListCollection}
-            multiple={false}
-            onValueChange={(e) => {
-              console.log(e.value[0]);
-              setEventTypeId(e.value[0]);
-            }}>
-            <SelectLabel>Event Type</SelectLabel>
-            <SelectTrigger>
-              <SelectValueText />
-            </SelectTrigger>
-            <SelectContent portalRef={contentRef}>
-              {userEventTypes
-                ? userEventTypes.items.map((item) => (
-                    <SelectItem key={item.value} item={item}>
-                      {item.label}
-                    </SelectItem>
-                  ))
-                : null}
-            </SelectContent>
-          </SelectRoot>
+          <HStack>
+            <Select.Root
+              collection={userEventTypes as ListCollection}
+              multiple={false}
+              onValueChange={(e) => {
+                setEventTypeId(e.value[0]);
+              }}>
+              <Select.Label>Event Type</Select.Label>
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {userEventTypes
+                    ? userEventTypes.items.map((item) => (
+                        <Select.Item key={item.value} item={item}>
+                          {item.label}
+                        </Select.Item>
+                      ))
+                    : null}
+                </Select.Content>
+              </Select.Positioner>
+            </Select.Root>
+            {isPayment() ? (
+              <Select.Root
+                collection={userPaymentTypes as ListCollection}
+                multiple={false}
+                onValueChange={(e) => {
+                  setPaymentTypeId(parseInt(e.value[0]));
+                }}>
+                <Select.Label>Payment Type</Select.Label>
+                <Select.Control>
+                  <Select.Trigger>
+                    <Select.ValueText />
+                  </Select.Trigger>
+                  <Select.IndicatorGroup>
+                    <Select.Indicator />
+                  </Select.IndicatorGroup>
+                </Select.Control>
+                <Select.Positioner>
+                  <Select.Content>
+                    {userPaymentTypes
+                      ? userPaymentTypes.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))
+                      : null}
+                  </Select.Content>
+                </Select.Positioner>
+              </Select.Root>
+            ) : null}
+          </HStack>
           <Field label="Date">
             <Input
               type="date"
