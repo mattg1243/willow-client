@@ -49,7 +49,7 @@ export function UpdateEvent({
   const [userPaymentTypes, setUserPaymentTypes] =
     useState<ListCollection<CollectionItem>>();
   const [paymentTypeId, setPaymentTypeId] = useState<number>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const queryClient = useQueryClient();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -58,7 +58,8 @@ export function UpdateEvent({
   const eventTypeMap = useRef<Record<string, EventType>>({});
 
   const isPayment = () => {
-    return eventState.event_type_id === "4d9e9d8f-5f9f-4f9a-9b7d-7b5cf3e53d2e";
+    if (!eventState.event_type_id) return false;
+    return !eventTypeMap.current[eventState.event_type_id].charge;
   };
 
   const submit = async () => {
@@ -73,6 +74,7 @@ export function UpdateEvent({
           amount: isPayment()
             ? eventState.amount
             : ((eventState.rate * eventState.duration) as number),
+          payment_type_id: paymentTypeId,
         },
       } as UpdateEventInput);
       toaster.create({
@@ -121,6 +123,10 @@ export function UpdateEvent({
       setLoading(true);
       try {
         const eventTypes = await getEventTypes();
+        eventTypes.forEach((et) => {
+          eventTypeMap.current[et.id] = et;
+        });
+        console.log(eventTypeMap);
         const eventTypesList = createListCollection({
           items: eventTypes.map((e) => {
             return { label: e.title, value: String(e.id) };
@@ -141,11 +147,13 @@ export function UpdateEvent({
       }
     };
     loadEventTypes();
-  }, []);
+  }, [paymentTypes]);
 
   useEffect(() => {
     setEventState(event);
   }, [event]);
+
+  if (loading) return <></>;
 
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>

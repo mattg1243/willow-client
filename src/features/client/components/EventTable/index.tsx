@@ -67,8 +67,14 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
   const hasSelection = selection.length > 0;
 
   const deleteEventsAction = async () => {
-    if (selection.length > 0) {
-      deleteEvents(selection, client.id);
+    try {
+      if (selection.length > 0) {
+        await deleteEvents(selection, client.id);
+        setSelection([]);
+      }
+    } catch (err) {
+      console.error(err);
+      
     }
   };
 

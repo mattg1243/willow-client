@@ -2,7 +2,7 @@ import { PayoutLayout } from "@/components/layout/payoutLayout";
 import { paths } from "@/config/paths";
 import { ClientSelector } from "@/features/client/components/ClientSelector";
 import { PayoutTable } from "@/features/payouts/components/PayoutTable";
-import { getClient, getClients } from "@/lib/api/clients";
+import { useClient, useClients } from "@/hooks/useClient";
 import { ProtectedRoute } from "@/lib/auth";
 import { getPayouts } from "@/lib/payouts";
 import { HStack, Spinner } from "@chakra-ui/react";
@@ -18,16 +18,8 @@ export function PayoutsRoute() {
     queryFn: () => getPayouts(clientId),
   });
 
-  const { data: client } = useQuery({
-    queryKey: ["client", clientId],
-    queryFn: () => getClient(clientId as string),
-    enabled: !!clientId,
-  });
-
-  const { data: clients } = useQuery({
-    queryKey: ["clients"],
-    queryFn: () => getClients(),
-  });
+  const { data: client } = useClient(clientId as string);
+  const { data: clients } = useClients();
 
   const getTotalPaid = (): number => {
     let total = 0;

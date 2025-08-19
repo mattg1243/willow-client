@@ -33,7 +33,6 @@ export function ClientRoute() {
     enabled: !!clientId,
   });
 
-  const eventsCount = payout?.events ? payout.events.length : 0;
   const totalBillings = events?.reduce((prev, curr) => prev + curr.amount, 0);
 
   return (

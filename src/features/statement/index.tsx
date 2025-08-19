@@ -179,7 +179,7 @@ export function StatementBtn({
     <>
       <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
         <DialogTrigger asChild>
-          <Button variant="outline">Create statement</Button>
+          <Button variant="outline" width='148px'><h3>Statement</h3></Button>
         </DialogTrigger>
         <DialogContent ref={contentRef}>
           <DialogHeader>Create statement</DialogHeader>

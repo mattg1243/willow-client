@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
-import { updateClient } from "@/lib/api/clients";
+import { toaster } from "@/components/ui/toaster";
+import { useUpdateClient } from "@/hooks/useClient";
 import { Client } from "@/types/api";
 import { Input } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, Edit } from "lucide-react";
 import { useRef, useState } from "react";
 import { withMask } from "use-mask-input";
@@ -24,13 +24,18 @@ export function UpdateClient({ client }: { client: Client }) {
   const [clientState, setClientState] = useState<Client>(client);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const queryClient = useQueryClient();
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const { mutateAsync: updateClientMutate } = useUpdateClient();
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await updateClient(clientState);
+      await updateClientMutate(clientState);
+      toaster.create({
+        type: "success",
+        title: "Client updated successfully.",
+      });
+      setOpen(false);
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -38,21 +43,10 @@ export function UpdateClient({ client }: { client: Client }) {
     }
   };
 
-  const { mutateAsync: updateClientMutate } = useMutation({
-    mutationFn: handleSubmit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["client", client.id] });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
-    },
-  });
-
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
-        <Button>
-          <Edit size="sm" />
-          Edit client
-        </Button>
+        <Edit width={24} />
       </DialogTrigger>
       <DialogContent ref={contentRef}>
         <DialogHeader>
@@ -132,7 +126,7 @@ export function UpdateClient({ client }: { client: Client }) {
         <DialogFooter>
           <Button
             onClick={() => {
-              updateClientMutate();
+              handleSubmit();
             }}
             loading={loading}>
             Save client

@@ -1,12 +1,5 @@
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-} from "@/components/ui/select";
 import { Client } from "@/types/api";
-import { createListCollection, SelectValueText } from "@chakra-ui/react";
+import { createListCollection, Select } from "@chakra-ui/react";
 import { useEffect } from "react";
 
 export function ClientSelector({
@@ -33,24 +26,24 @@ export function ClientSelector({
   });
 
   return (
-    <SelectRoot
+    <Select.Root
       collection={clientsCollection}
       multiple={false}
       value={value ? [value] : [""]}
       onValueChange={(c) => {
         onChange(c.items[0].value);
       }}>
-      <SelectLabel>Select client</SelectLabel>
-      <SelectTrigger>
-        <SelectValueText />
-      </SelectTrigger>
-      <SelectContent>
+      <Select.Label>Select client</Select.Label>
+      <Select.Trigger>
+        <Select.ValueText />
+      </Select.Trigger>
+      <Select.Content>
         {clientsCollection.items.map((client) => (
-          <SelectItem item={client} key={client.value}>
+          <Select.Item item={client} key={client.value}>
             {client.label}
-          </SelectItem>
+          </Select.Item>
         ))}
-      </SelectContent>
-    </SelectRoot>
+      </Select.Content>
+    </Select.Root>
   );
 }

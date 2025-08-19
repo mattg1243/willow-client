@@ -1,20 +1,11 @@
 import { DashboardLayout } from "@/components/layout/dashboardLayout";
 import { ClientTable } from "@/features/dashboard/components/ClientTable";
-import { api } from "@/lib/api/apiClient";
+import { useClients } from "@/hooks/useClient";
 import { ProtectedRoute } from "@/lib/auth";
-import { Client } from "@/types/api";
 import { Spinner, VStack } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
 
 export function DashboardRoute() {
-  const getClients = async (): Promise<Client[]> => {
-    return await api.get("/client");
-  };
-
-  const { data: clients, isLoading } = useQuery({
-    queryKey: ["clients"],
-    queryFn: getClients,
-  });
+  const { data: clients, isLoading } = useClients();
 
   return (
     <ProtectedRoute>

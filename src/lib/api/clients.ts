@@ -43,7 +43,7 @@ export type UpdateClientInput = z.infer<typeof updateClientSchema>;
 export const updateClient = async (
   data: UpdateClientInput
 ): Promise<Client> => {
-  return api.put("/client", data);
+  return api.put("/client", { client: data });
 };
 
 export const archiveClients = async (ids: string[]): Promise<void> => {
