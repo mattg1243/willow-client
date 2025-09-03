@@ -33,7 +33,7 @@ export function ClientRoute() {
     enabled: !!clientId,
   });
 
-  const totalBillings = events?.reduce((prev, curr) => prev + curr.amount, 0);
+  const totalBillings = events?.reduce((prev, curr) => prev + (curr.charge ? curr.amount : 0), 0);
 
   return (
     <ProtectedRoute>
