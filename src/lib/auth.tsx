@@ -4,7 +4,14 @@ import { z } from "zod";
 import { paths } from "@/config/paths";
 import { type User } from "@/types/api";
 
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { toaster } from "@/components/ui/toaster";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 import { api } from "./api/apiClient";
 
 export const getUser = async (): Promise<User> => {
@@ -67,11 +74,23 @@ export const useUser = () => {
 
 type UserState = {
   user: User | null;
+  expiresAt: number | null;
 };
 
 const initialState = (): UserState => {
   const storedUser = localStorage.getItem("willowUser");
-  return storedUser ? JSON.parse(storedUser) : { user: null };
+
+  if (!storedUser) {
+    return { user: null, expiresAt: null };
+  }
+
+  const parsedState: UserState = JSON.parse(storedUser);
+
+  if (parsedState.expiresAt && new Date().getTime() > parsedState.expiresAt) {
+    return { user: null, expiresAt: null };
+  }
+
+  return parsedState;
 };
 
 type UserAction = { type: "SET_USER"; payload: User } | { type: "CLEAR_USER" };
@@ -82,9 +101,12 @@ export const userReducer = (
 ): UserState => {
   switch (action.type) {
     case "SET_USER":
-      return { user: action.payload };
+      return {
+        user: action.payload,
+        expiresAt: new Date().getTime() + 30 * 60 * 1000,
+      };
     case "CLEAR_USER":
-      return { user: null };
+      return { user: null, expiresAt: null };
     default:
       return state;
   }
@@ -93,18 +115,38 @@ export const userReducer = (
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(userReducer, initialState());
 
+  const handleLogout = useCallback(async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      dispatch({ type: "CLEAR_USER" });
+      const currentPage = window.location.pathname;
+      const loginPathWithRedirect = paths.auth.login.getHref(currentPage);
+      toaster.create({
+        title: "You're session has expired, please log back in.",
+        type: "info",
+      });
+      window.location.replace(loginPathWithRedirect);
+    }
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("willowUser", JSON.stringify(state));
   }, [state]);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      dispatch({ type: "CLEAR_USER" });
-    } catch (err) {
-      console.error(err);
+  useEffect(() => {
+    if (state.user && state.expiresAt) {
+      const timeLeft = state.expiresAt - new Date().getTime();
+      if (timeLeft > 0) {
+        const timer = setTimeout(handleLogout, timeLeft);
+        return () => clearTimeout(timer);
+      } else {
+        handleLogout();
+      }
     }
-  };
+  }, [state, handleLogout]);
 
   return (
     <UserContext.Provider value={{ user: state.user, dispatch, handleLogout }}>

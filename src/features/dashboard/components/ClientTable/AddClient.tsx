@@ -40,10 +40,6 @@ export function AddClient() {
 
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    console.log(user);
-  });
-
   const submit = async () => {
     if (fname) {
       setLoading(true);
