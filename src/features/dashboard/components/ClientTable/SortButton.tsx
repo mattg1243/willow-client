@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   MenuContent,
   MenuRadioItem,
@@ -6,9 +7,8 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Button } from "@/components/ui/button";
-import { SortAscIcon, SortDescIcon } from "lucide-react";
 import { VStack } from "@chakra-ui/react";
+import { SortAscIcon, SortDescIcon } from "lucide-react";
 
 export type SortByOptions =
   | "fname"
@@ -51,7 +51,6 @@ export function SortButton({
   return (
     <>
       <VStack alignItems="start">
-        <h5>Sort by</h5>
         <MenuRoot>
           <MenuTrigger asChild>
             <Button variant="outline">

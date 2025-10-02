@@ -64,7 +64,11 @@ export function Payout({ payout }: { payout: MakePayoutRes | undefined }) {
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
-        <Button>Make payout</Button>
+        <Button
+          width={"126px"}
+          style={{ backgroundColor: "var(--willow-green)" }}>
+          Make payout
+        </Button>
       </DialogTrigger>
       <DialogContent ref={contentRef}>
         <DialogHeader>
@@ -75,8 +79,8 @@ export function Payout({ payout }: { payout: MakePayoutRes | undefined }) {
           <List.Root marginTop={6}>
             {payout.events.map((e) => (
               <List.Item>
-                {e.event_type_title} on {new Date(e.date).toLocaleDateString()} for{" "}
-                {moneyToStr(e.amount)}
+                {e.event_type_title} on {new Date(e.date).toLocaleDateString()}{" "}
+                for {moneyToStr(e.amount)}
               </List.Item>
             ))}
           </List.Root>

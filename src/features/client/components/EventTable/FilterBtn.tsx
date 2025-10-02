@@ -20,7 +20,6 @@ export function FilterBtn({ filter, setFilter }: FilterButtonProps) {
   return (
     <>
       <VStack alignSelf="end" textAlign="flex-end" alignItems="end">
-        <h5>Filter</h5>
         <MenuRoot>
           <MenuTrigger asChild>
             <Button variant="outline">

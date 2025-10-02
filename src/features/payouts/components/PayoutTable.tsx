@@ -31,7 +31,7 @@ export function PayoutTable({
   loading: boolean;
   clientId: string | undefined;
 }) {
-  const pageSize = 5;
+  const pageSize = 10;
 
   const [page, setPage] = useState<number>(1);
 
@@ -78,14 +78,16 @@ export function PayoutTable({
         <Table.Body>
           {payouts ? (
             visiblePayouts.map((payout) => (
-              <Table.Row key={payout.id} height={100}>
+              <Table.Row key={payout.id} height={50}>
                 {!clientId ? (
                   <Table.Cell>
                     {payout.client_fname} {payout.client_lname}
                   </Table.Cell>
                 ) : null}
                 <Table.Cell>{moneyToStr(payout.amount)}</Table.Cell>
-                <Table.Cell>{new Date(payout.date).toLocaleDateString()}</Table.Cell>
+                <Table.Cell>
+                  {new Date(payout.date).toLocaleDateString()}
+                </Table.Cell>
                 <Table.Cell>
                   <EventsBtn payoutId={payout.id} />
                 </Table.Cell>

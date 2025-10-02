@@ -11,7 +11,9 @@ export function DashboardRoute() {
     <ProtectedRoute>
       <DashboardLayout title="Dashboard">
         <VStack spaceY={8}>
-          <h1>Clients</h1>
+          <strong>
+            <h3>Clients</h3>
+          </strong>
           {isLoading ? (
             <Spinner size="xl" />
           ) : (

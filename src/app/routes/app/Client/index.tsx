@@ -33,7 +33,10 @@ export function ClientRoute() {
     enabled: !!clientId,
   });
 
-  const totalBillings = events?.reduce((prev, curr) => prev + (curr.charge ? curr.amount : 0), 0);
+  const totalBillings = events?.reduce(
+    (prev, curr) => prev + (curr.charge ? curr.amount : 0),
+    0
+  );
 
   return (
     <ProtectedRoute>
@@ -41,11 +44,13 @@ export function ClientRoute() {
         <ClientLayout title={`${client.fname} ${client.lname}`}>
           <VStack spaceY={4}>
             <HStack marginLeft={12}>
-              <h1>{client.fname + " " + client.lname}</h1>
+              <strong>
+                <h3>{client.fname + " " + client.lname}</h3>
+              </strong>
               <UpdateClient client={client} />
             </HStack>
             {client.isarchived ? (
-              <h4>
+              <h3>
                 Archived
                 <BookMarked
                   size={12}
@@ -54,28 +59,28 @@ export function ClientRoute() {
                     marginLeft: 6,
                   }}
                 />
-              </h4>
+              </h3>
             ) : null}
             <HStack spaceX={12} justifyContent="space-around" width="80%">
               <VStack alignItems="flex-start" flex={1}>
                 <div className={styles.infoCont}>
                   <div className={styles.infoRow}>
-                    <h3>Retainer Balance:</h3>
+                    <h5>Retainer Balance:</h5>
                     <strong style={{ alignSelf: "end" }}>
-                      <h3>{moneyToStr(client.balance)}</h3>
+                      <h5>{moneyToStr(client.balance)}</h5>
                     </strong>
                   </div>
                   <div className={styles.infoRow}>
-                    <h3>Available Payout:</h3>
+                    <h5>Available Payout:</h5>
                     <strong>
-                      <h3>{moneyToStr(payout?.payout as number)}</h3>
+                      <h5>{moneyToStr(payout?.payout as number)}</h5>
                     </strong>
                   </div>
                   <div className={styles.infoRow}>
-                    <h3>Total Billings:</h3>
-                    <h3>
+                    <h5>Total Billings:</h5>
+                    <h5>
                       <strong>{moneyToStr(totalBillings || 0)}</strong>
-                    </h3>
+                    </h5>
                   </div>
                 </div>
               </VStack>
@@ -83,11 +88,11 @@ export function ClientRoute() {
                 <Payout payout={payout} />
                 <Button
                   variant="outline"
-                  width="148px"
+                  width="126px"
                   onClick={() =>
                     navigate(paths.app.payoutsClient.getHref(clientId))
                   }>
-                  <h3>Payouts</h3>
+                  <h4>Payouts</h4>
                 </Button>
                 <StatementBtn events={events || []} client={client} />
               </VStack>

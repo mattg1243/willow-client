@@ -20,7 +20,7 @@ import { AddClient } from "./AddClient";
 import { FilterButton, FilterOptions } from "./FilterButton";
 import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
 
-const pageSize = 5;
+const pageSize = 10;
 
 export type ClientTableProps = {
   clients: Array<Client>;
@@ -125,7 +125,7 @@ export function ClientTable({ clients }: ClientTableProps) {
   });
 
   return (
-    <VStack width={"80%"} margin={16}>
+    <VStack margin={16}>
       <HStack
         justifyContent="space-between"
         alignItems="end"
@@ -174,7 +174,11 @@ export function ClientTable({ clients }: ClientTableProps) {
           {visibleClients.length < 1
             ? null
             : visibleClients.map((client) => (
-                <Table.Row key={client.id} height={100}>
+                <Table.Row
+                  key={client.id}
+                  height={50}
+                  onClick={() => navigate(paths.app.client.getHref(client.id))}
+                  style={{ cursor: "pointer" }}>
                   <Table.Cell>
                     <Checkbox
                       top="1"
@@ -192,10 +196,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                     />
                   </Table.Cell>
                   <Table.Cell width={200}>
-                    <span
-                      onClick={() =>
-                        navigate(paths.app.client.getHref(client.id))
-                      }>
+                    <span>
                       {client.fname} {client.lname}{" "}
                       {client.isarchived ? (
                         <BookMarked

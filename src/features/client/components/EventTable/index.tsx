@@ -17,7 +17,7 @@ import { FilterBtn, FilterOptions } from "./FilterBtn";
 import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
 import { UpdateEvent } from "./UpdateEvent";
 
-const pageSize = 5;
+const pageSize = 10;
 
 export type EventsTableProps = {
   client: Client;
@@ -74,7 +74,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
       }
     } catch (err) {
       console.error(err);
-      
     }
   };
 
@@ -110,20 +109,28 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
           interactive
           striped
           height={550}
-          minWidth={650}>
+          minWidth={1000}>
           <Table.Header>
-            <Table.Row height={50}>
-              <Table.ColumnHeader>Edit</Table.ColumnHeader>
-              <Table.ColumnHeader>Event</Table.ColumnHeader>
-              <Table.ColumnHeader>Amount</Table.ColumnHeader>
+            <Table.Row height={25}>
               <Table.ColumnHeader>Date</Table.ColumnHeader>
-              <Table.ColumnHeader>Paid</Table.ColumnHeader>
+              <Table.ColumnHeader>Event</Table.ColumnHeader>
+              <Table.ColumnHeader>Time</Table.ColumnHeader>
+              <Table.ColumnHeader>Amount</Table.ColumnHeader>
+              <Table.ColumnHeader>Edit</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {events
               ? visibleEvents.map((event) => (
-                  <Table.Row key={event.id} height={100}>
+                  <Table.Row key={event.id} height={50}>
+                    <Table.Cell>
+                      {new Date(event.date).toLocaleDateString()}
+                    </Table.Cell>
+                    <Table.Cell>{event.event_type_title}</Table.Cell>
+                    <Table.Cell>
+                      {event.duration === 0 ? "" : event.duration}
+                    </Table.Cell>
+                    <Table.Cell>{moneyToStr(event.amount)}</Table.Cell>
                     <Table.Cell>
                       <Checkbox
                         top="1"
@@ -139,14 +146,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                         }}
                       />
                       <UpdateEvent event={event} clientId={client.id} />
-                    </Table.Cell>
-                    <Table.Cell>{event.event_type_title}</Table.Cell>
-                    <Table.Cell>{moneyToStr(event.amount)}</Table.Cell>
-                    <Table.Cell>
-                      {new Date(event.date).toLocaleDateString()}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Checkbox checked={event.paid} size="sm" readOnly />
                     </Table.Cell>
                   </Table.Row>
                 ))

@@ -46,7 +46,7 @@ export function UpdateClient({ client }: { client: Client }) {
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
-        <Edit width={24} />
+        <Edit width={16} />
       </DialogTrigger>
       <DialogContent ref={contentRef}>
         <DialogHeader>

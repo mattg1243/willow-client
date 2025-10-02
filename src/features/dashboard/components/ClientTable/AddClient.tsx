@@ -18,7 +18,7 @@ import { useUser } from "@/lib/auth";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { withMask } from "use-mask-input";
 
 export function AddClient() {

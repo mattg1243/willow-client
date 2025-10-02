@@ -14,9 +14,7 @@ export function ProfileLayout({
     <>
       <Head title={title} />
       <Header />
-      <VStack width="100vw" paddingTop={100}>
-        {children}
-      </VStack>
+      <VStack className="layout-vstack">{children}</VStack>
     </>
   );
 }
