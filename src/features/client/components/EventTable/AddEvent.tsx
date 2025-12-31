@@ -174,6 +174,10 @@ export function AddEvent({
     loadEventTypes();
   }, [paymentTypes]);
 
+  useEffect(() => {
+    console.log(duration);
+  }, [duration]);
+
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
@@ -252,14 +256,28 @@ export function AddEvent({
             />
           </Field>
           <Field label="Duration">
-            <InputGroup width={"100%"} endElement={<>hr</>}>
-              <Input
-                type="number"
-                value={isPayment() ? 0 : duration === 0 ? undefined : duration}
-                disabled={isPayment()}
-                onChange={(e) => setDuration(parseFloat(e.target.value))}
-              />
-            </InputGroup>
+            <HStack>
+              <InputGroup width={"100%"} endElement={<>hr</>}>
+                <Input
+                  type="number"
+                  value={isPayment() ? 0 : Math.floor(duration) || ""}
+                  disabled={isPayment()}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "" || value === null) {
+                      setDuration(Math.round((duration % 1) * 10) / 10);
+                    } else {
+                      const hours = parseFloat(value);
+                      if (!isNaN(hours)) {
+                        const currentMinutes = duration % 1;
+                        setDuration(Math.round((hours + currentMinutes) * 10) / 10);
+                      }
+                    }
+                  }}
+                />
+              </InputGroup>
+              <MinuteSelect duration={duration} onChange={setDuration} />
+            </HStack>
           </Field>
           <Field
             label={
@@ -304,10 +322,7 @@ export function AddEvent({
             </InputGroup>
           </Field>
           <Field label="Rate">
-            <InputGroup
-              width={"100%"}
-              startElement={<DollarSign size={16} />}
-              endElement={<>per hr</>}>
+            <InputGroup width={"100%"} startElement={<DollarSign size={16} />}>
               <Input
                 type="number"
                 readOnly={isPayment()}
@@ -351,5 +366,43 @@ export function AddEvent({
         </DialogBody>
       </DialogContent>
     </DialogRoot>
+  );
+}
+
+function MinuteSelect({
+  duration,
+  onChange,
+}: {
+  duration: number;
+  onChange: (n: number) => void;
+}) {
+  return (
+    <select
+      style={{
+        width: "200px",
+        height: "40px",
+        padding: "0 12px",
+        borderRadius: "4px",
+        border: "1px solid #d1d5db",
+        fontSize: "14px",
+        backgroundColor: "white",
+        cursor: "pointer",
+      }}
+      defaultValue="0"
+      onChange={(e) => {
+        const newDuration = Math.floor(duration) + parseFloat(e.target.value);
+        onChange(Math.round(newDuration * 10) / 10);
+      }}>
+      <option value="0">0 min</option>
+      <option value="0.1">1-6 mins</option>
+      <option value="0.2">7-12 mins</option>
+      <option value="0.3">13-18 mins</option>
+      <option value="0.4">19-24 mins</option>
+      <option value="0.5">25-30 mins</option>
+      <option value="0.6">31-36 mins</option>
+      <option value="0.7">37-42 mins</option>
+      <option value="0.8">43-48 mins</option>
+      <option value="0.9">49-54 mins</option>
+    </select>
   );
 }
