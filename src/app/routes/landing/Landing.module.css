@@ -1,53 +1,98 @@
-h1 {
-  font-size: clamp(36px, 20vw, 72px);
+.pageWrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fffe 100%);
 }
 
-h2 {
-  font-family: "Radio Canada", sans-serif;
-  font-size: clamp(24px, 12vw, 36px);
+.heroTitle {
+  font-size: clamp(48px, 15vw, 96px);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  padding: 0 16px;
+  line-height: 1.2;
+  overflow: visible;
 }
 
-h3 {
-  font-family: "Radio Canada", sans-serif;
-  font-size: clamp(16px, 5vw, 20px);
-  max-width: 400px;
-  text-align: center;
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, #dcfce7 100%);
+  padding-bottom: 60px;
 }
 
-.cont {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  top: 10vh;
-  background: radial-gradient(
-    circle at bottom center,
-    /* Center the gradient at the bottom */ rgba(144, 238, 144, 0.6) -50%,
-    /* Soft green */ rgba(255, 255, 255, 0) 60vh
+.features {
+  background: white;
+  position: relative;
+}
+
+.features::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    transparent 100%
   );
-  background-repeat: no-repeat;
 }
 
-.cont * {
-  margin: 16px;
+.howItWorks {
+  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+  position: relative;
 }
 
-.willow-section {
-  height: 25vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
+.finalCta {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 30vh;
-  width: 100%;
+.finalCta::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 50%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(34, 197, 94, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
-.green {
-  background-color: var(--willow-green);
+.footer {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+  margin: 0;
+  padding: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: clamp(36px, 12vw, 72px);
+  }
+
+  .headerWrapper {
+    display: none;
+  }
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
 }

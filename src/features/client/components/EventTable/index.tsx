@@ -12,10 +12,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { moneyToStr } from "../../../../utils/money";
 import { EventsTableActionBar } from "./ActionBar";
-import { AddEvent } from "./AddEvent";
+import { EventForm } from "./EventForm";
 import { FilterBtn, FilterOptions } from "./FilterBtn";
 import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
-import { UpdateEvent } from "./UpdateEvent";
 
 const pageSize = 10;
 
@@ -32,6 +31,7 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
   const [order, setOrder] = useState<SortByOrder>("asc");
   const [filter, setFilter] = useState<FilterOptions>("All");
   const [filteredEvents, setFilteredEvents] = useState<Event[]>(events || []);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -100,7 +100,11 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
             order={order}
             onOrderChange={setOrder}
           />
-          <AddEvent clientId={client.id} clientRate={client.rate} />
+          <EventForm
+            mode="add"
+            clientId={client.id}
+            clientRate={client.rate}
+          />
           <FilterBtn filter={filter} setFilter={setFilter} />
         </HStack>
         <Table.Root
@@ -116,13 +120,18 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
               <Table.ColumnHeader>Event</Table.ColumnHeader>
               <Table.ColumnHeader>Time</Table.ColumnHeader>
               <Table.ColumnHeader>Amount</Table.ColumnHeader>
-              <Table.ColumnHeader>Edit</Table.ColumnHeader>
+              <Table.ColumnHeader>Select</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {events
               ? visibleEvents.map((event) => (
-                  <Table.Row key={event.id} height={50}>
+                  <Table.Row
+                    key={event.id}
+                    height={50}
+                    onClick={() => setEditingEvent(event)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <Table.Cell>
                       {new Date(event.date).toLocaleDateString()}
                     </Table.Cell>
@@ -131,7 +140,7 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                       {event.duration === 0 ? "" : event.duration}
                     </Table.Cell>
                     <Table.Cell>{moneyToStr(event.amount)}</Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         top="1"
                         checked={selection.includes(event.id)}
@@ -145,7 +154,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                           );
                         }}
                       />
-                      <UpdateEvent event={event} clientId={client.id} />
                     </Table.Cell>
                   </Table.Row>
                 ))
@@ -176,6 +184,15 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
           }}
         />
       </VStack>
+      {editingEvent && (
+        <EventForm
+          mode="update"
+          event={editingEvent}
+          clientId={client.id}
+          isOpen={true}
+          onClose={() => setEditingEvent(null)}
+        />
+      )}
     </>
   );
 }

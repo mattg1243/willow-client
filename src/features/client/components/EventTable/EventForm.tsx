@@ -13,50 +13,86 @@ import {
 import {
   createListCollection,
   HStack,
+  Icon,
   ListCollection,
   Select,
   Textarea,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
 import { Tooltip } from "@/components/ui/tooltip";
 import { usePaymentTypes } from "@/hooks/usePaymentTypes";
-import { createEvent } from "@/lib/api/events";
+import {
+  createEvent,
+  deleteEvents,
+  updateEvent,
+  UpdateEventInput,
+} from "@/lib/api/events";
 import { getEventTypes } from "@/lib/api/eventTypes";
 import { system } from "@/theme";
-import { EventType, PaymentType } from "@/types/api";
+import { EventType, PaymentType, type Event } from "@/types/api";
 import { Input } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DollarSign, Info, PlusIcon } from "lucide-react";
+import { DollarSign, Edit, Info, PlusIcon } from "lucide-react";
 
-export function AddEvent({
-  clientId,
-  clientRate,
-}: {
+type CollectionItem = {
+  label: string;
+  value: string;
+};
+
+type EventFormProps = {
+  mode: "add" | "update";
   clientId: string;
-  clientRate: number;
-}) {
-  type CollectionItem = {
-    label: string;
-    value: string;
-  };
+  clientRate?: number;
+  event?: Event;
+  isOpen?: boolean;
+  onClose?: () => void;
+};
 
-  const [open, setOpen] = useState<boolean>(false);
-  const [date, setDate] = useState<Date>(new Date());
-  const [duration, setDuration] = useState<number>(0);
-  const [eventTypeId, setEventTypeId] = useState<string>();
-  const [paymentTypeId, setPaymentTypeId] = useState<number>();
+export function EventForm({
+  mode,
+  clientId,
+  clientRate = 0,
+  event,
+  isOpen = false,
+  onClose,
+}: EventFormProps) {
+  const [open, setOpen] = useState<boolean>(isOpen);
+  const [date, setDate] = useState<Date>(
+    mode === "update" && event ? new Date(event.date) : new Date()
+  );
+  const [duration, setDuration] = useState<number>(
+    mode === "update" && event ? (event.duration as number) : 0
+  );
+  const [eventTypeId, setEventTypeId] = useState<string | undefined>(
+    mode === "update" && event ? event.event_type_id : undefined
+  );
+  const [paymentTypeId, setPaymentTypeId] = useState<number | undefined>(
+    mode === "update" && event ? event.payment_type_id : undefined
+  );
   const [userEventTypes, setUserEventTypes] =
     useState<ListCollection<CollectionItem>>();
   const [userPaymentTypes, setUserPaymentTypes] =
     useState<ListCollection<CollectionItem>>();
-  const [rate, setRate] = useState<number>(clientRate);
-  const [eventNotes, setEventNotes] = useState<string>("");
-  const [statementNotes, setStatementNotes] = useState<string>("");
-  const [amount, setAmount] = useState<number>();
+  const [rate, setRate] = useState<number>(
+    mode === "update" && event ? event.rate : clientRate
+  );
+  const [eventNotes, setEventNotes] = useState<string>(
+    mode === "update" && event ? (event.event_notes as string) : ""
+  );
+  const [statementNotes, setStatementNotes] = useState<string>(
+    mode === "update" && event ? (event.statement_notes as string) : ""
+  );
+  const [amount, setAmount] = useState<number | undefined>(
+    mode === "update" && event ? event.amount : undefined
+  );
+  const [paid, setPaid] = useState<boolean>(
+    mode === "update" && event ? event.paid : false
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
@@ -67,6 +103,7 @@ export function AddEvent({
 
   const isPayment = () => {
     if (!eventTypeId) return false;
+    if (!eventTypeMap.current[eventTypeId]) return false;
     return !eventTypeMap.current[eventTypeId].charge;
   };
 
@@ -95,9 +132,10 @@ export function AddEvent({
     setEventNotes("");
     setStatementNotes("");
     setAmount(undefined);
+    setPaid(false);
   };
 
-  const submit = async () => {
+  const submitAdd = async () => {
     const data = {
       event: {
         client_id: clientId,
@@ -136,13 +174,71 @@ export function AddEvent({
     }
   };
 
+  const submitUpdate = async () => {
+    if (!event) return;
+
+    setLoading(true);
+    try {
+      await updateEvent({
+        event: {
+          ...event,
+          date: date.toISOString(),
+          duration: isPayment() ? 0 : duration,
+          event_type_id: eventTypeId as string,
+          payment_type_id: paymentTypeId,
+          event_notes: eventNotes,
+          statement_notes: statementNotes,
+          rate: isPayment() ? 0 : rate,
+          amount: isPayment() ? amount : rate * duration,
+          paid,
+        },
+      } as UpdateEventInput);
+      toaster.create({
+        type: "success",
+        title: "Event updated successfully.",
+      });
+      setOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      toaster.create({ title: "Error updating event: " + err.message || err });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteEventHandler = async () => {
+    if (!event) return;
+
+    try {
+      await deleteEvents([event.id], clientId);
+      toaster.create({
+        type: "success",
+        title: "Event deleted successfully.",
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onMutateSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["events", clientId] });
+    queryClient.invalidateQueries({ queryKey: ["client", clientId] });
+    queryClient.invalidateQueries({ queryKey: ["payouts", clientId] });
+  };
+
   const { mutateAsync: addEventMutation } = useMutation({
-    mutationFn: submit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events", clientId] });
-      queryClient.invalidateQueries({ queryKey: ["client", clientId] });
-      queryClient.invalidateQueries({ queryKey: ["payouts", clientId] });
-    },
+    mutationFn: submitAdd,
+    onSuccess: onMutateSuccess,
+  });
+
+  const { mutateAsync: updateEventMutation } = useMutation({
+    mutationFn: submitUpdate,
+    onSuccess: onMutateSuccess,
+  });
+
+  const { mutateAsync: deleteEventMutation } = useMutation({
+    mutationFn: deleteEventHandler,
+    onSuccess: onMutateSuccess,
   });
 
   useEffect(() => {
@@ -174,27 +270,59 @@ export function AddEvent({
     loadEventTypes();
   }, [paymentTypes]);
 
+  // Sync with event prop when in update mode
   useEffect(() => {
-    console.log(duration);
-  }, [duration]);
+    if (mode === "update" && event) {
+      setDate(new Date(event.date));
+      setDuration(event.duration as number);
+      setEventTypeId(event.event_type_id);
+      setPaymentTypeId(event.payment_type_id);
+      setRate(event.rate);
+      setEventNotes(event.event_notes as string);
+      setStatementNotes(event.statement_notes as string);
+      setAmount(event.amount);
+      setPaid(event.paid);
+    }
+  }, [mode, event]);
+
+  // Sync open state with isOpen prop
+  useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
 
   return (
-    <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+    <DialogRoot
+      open={open}
+      onOpenChange={(e) => {
+        setOpen(e.open);
+        if (!e.open && onClose) {
+          onClose();
+        }
+      }}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <PlusIcon />
-          Add Event
-        </Button>
+        {mode === "add" ? (
+          <Button variant="outline">
+            <PlusIcon />
+            Add Event
+          </Button>
+        ) : (
+          <Icon size="md" style={{ marginTop: 4, marginLeft: 8 }}>
+            <Edit />
+          </Icon>
+        )}
       </DialogTrigger>
       <DialogContent ref={contentRef}>
         <DialogHeader>
-          <DialogTitle>Add Event</DialogTitle>
+          <DialogTitle>
+            {mode === "add" ? "Add Event" : "Edit Event"}
+          </DialogTitle>
         </DialogHeader>
         <DialogBody spaceY={8} alignItems="center">
           <HStack>
             <Select.Root
               collection={userEventTypes as ListCollection}
               multiple={false}
+              value={eventTypeId ? [eventTypeId] : undefined}
               onValueChange={(e) => {
                 setEventTypeId(e.value[0]);
               }}>
@@ -223,6 +351,7 @@ export function AddEvent({
               <Select.Root
                 collection={userPaymentTypes as ListCollection}
                 multiple={false}
+                value={paymentTypeId ? [String(paymentTypeId)] : undefined}
                 onValueChange={(e) => {
                   setPaymentTypeId(parseInt(e.value[0]));
                 }}>
@@ -252,6 +381,7 @@ export function AddEvent({
           <Field label="Date">
             <Input
               type="date"
+              value={date.toISOString().split("T")[0]}
               onChange={(e) => setDate(new Date(e.target.value))}
             />
           </Field>
@@ -260,7 +390,9 @@ export function AddEvent({
               <InputGroup width={"100%"} endElement={<>hr</>}>
                 <Input
                   type="number"
-                  value={isPayment() ? 0 : Math.floor(duration) || ""}
+                  value={
+                    isPayment() ? 0 : duration === 0 ? "" : Math.floor(duration)
+                  }
                   disabled={isPayment()}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -270,7 +402,9 @@ export function AddEvent({
                       const hours = parseFloat(value);
                       if (!isNaN(hours)) {
                         const currentMinutes = duration % 1;
-                        setDuration(Math.round((hours + currentMinutes) * 10) / 10);
+                        setDuration(
+                          Math.round((hours + currentMinutes) * 10) / 10
+                        );
                       }
                     }
                   }}
@@ -347,17 +481,40 @@ export function AddEvent({
               />
             </InputGroup>
           </Field>
+          {mode === "update" && !isPayment() ? (
+            <Field alignItems="center">
+              <Checkbox
+                checked={paid}
+                onCheckedChange={(e) => setPaid(!!e.checked)}>
+                Paid
+              </Checkbox>
+            </Field>
+          ) : null}
           <DialogFooter>
             <DialogActionTrigger asChild>
               <Button variant="outline">Cancel</Button>
             </DialogActionTrigger>
+            {mode === "update" && (
+              <Button
+                type="button"
+                background={system.token("colors.error.400")}
+                onClick={() => {
+                  deleteEventMutation();
+                }}>
+                Delete event
+              </Button>
+            )}
             <Button
               type="button"
               justifySelf="center"
               background={system.token("colors.primary.500")}
               loading={loading}
               onClick={() => {
-                addEventMutation();
+                if (mode === "add") {
+                  addEventMutation();
+                } else {
+                  updateEventMutation();
+                }
               }}>
               Save Event
             </Button>

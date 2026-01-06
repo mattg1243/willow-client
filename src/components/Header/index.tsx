@@ -5,7 +5,6 @@ import { HStack } from "@chakra-ui/react";
 import { LogOutIcon, LucideUser } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { ColorModeButton } from "../ui/color-mode";
 import { WLogo } from "../ui/WLogo";
 import styles from "./Header.module.css";
 
@@ -17,9 +16,9 @@ export function Header() {
 
   const onLogoClick = () => {
     if (currentPath !== paths.home.path) {
-      navigate(paths.home.path)
+      navigate(paths.home.path);
     }
-  }
+  };
 
   if (window.innerWidth > 480) {
     return (
@@ -30,11 +29,10 @@ export function Header() {
         className={styles.cont}
         style={{
           margin: 0,
-          padding: "16px",
-          paddingTop: "36px",
+          padding: "36px 32px 0",
         }}>
         <HStack spaceX={8}>
-          <WLogo onClick={onLogoClick}/>
+          <WLogo onClick={onLogoClick} />
           {user ? (
             <>
               <Button
@@ -81,7 +79,6 @@ export function Header() {
               Log in
             </a>
           )}
-          <ColorModeButton />
         </HStack>
       </HStack>
     );
