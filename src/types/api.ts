@@ -51,6 +51,7 @@ export type Event = Entity<{
   date: string;
   duration: number;
   event_type_id: string;
+  payment_type_id: string | null;
   event_type_title: string;
   event_notes: string | null;
   statement_notes: string | null;

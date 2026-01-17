@@ -63,35 +63,42 @@ export function EventForm({
 }: EventFormProps) {
   const [open, setOpen] = useState<boolean>(isOpen);
   const [date, setDate] = useState<Date>(
-    mode === "update" && event ? new Date(event.date) : new Date()
+    mode === "update" && event ? new Date(event.date) : new Date(),
   );
   const [duration, setDuration] = useState<number>(
-    mode === "update" && event ? (event.duration as number) : 0
+    mode === "update" && event ? (event.duration as number) : 0,
   );
   const [eventTypeId, setEventTypeId] = useState<string | undefined>(
-    mode === "update" && event ? event.event_type_id : undefined
+    mode === "update" && event ? event.event_type_id : undefined,
   );
-  const [paymentTypeId, setPaymentTypeId] = useState<number | undefined>(
-    mode === "update" && event ? event.payment_type_id : undefined
+  const initialPaymentTypeId: number | null | undefined =
+    mode === "update" && event
+      ? typeof event.payment_type_id === "string"
+        ? parseInt(event.payment_type_id)
+        : (event.payment_type_id as number | null | undefined)
+      : undefined;
+
+  const [paymentTypeId, setPaymentTypeId] = useState<number | null | undefined>(
+    initialPaymentTypeId,
   );
   const [userEventTypes, setUserEventTypes] =
     useState<ListCollection<CollectionItem>>();
   const [userPaymentTypes, setUserPaymentTypes] =
     useState<ListCollection<CollectionItem>>();
   const [rate, setRate] = useState<number>(
-    mode === "update" && event ? event.rate : clientRate
+    mode === "update" && event ? event.rate : clientRate,
   );
   const [eventNotes, setEventNotes] = useState<string>(
-    mode === "update" && event ? (event.event_notes as string) : ""
+    mode === "update" && event ? (event.event_notes as string) : "",
   );
   const [statementNotes, setStatementNotes] = useState<string>(
-    mode === "update" && event ? (event.statement_notes as string) : ""
+    mode === "update" && event ? (event.statement_notes as string) : "",
   );
   const [amount, setAmount] = useState<number | undefined>(
-    mode === "update" && event ? event.amount : undefined
+    mode === "update" && event ? event.amount : undefined,
   );
   const [paid, setPaid] = useState<boolean>(
-    mode === "update" && event ? event.paid : false
+    mode === "update" && event ? event.paid : false,
   );
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -276,7 +283,11 @@ export function EventForm({
       setDate(new Date(event.date));
       setDuration(event.duration as number);
       setEventTypeId(event.event_type_id);
-      setPaymentTypeId(event.payment_type_id);
+      setPaymentTypeId(
+        typeof event.payment_type_id === "string"
+          ? parseInt(event.payment_type_id)
+          : event.payment_type_id,
+      );
       setRate(event.rate);
       setEventNotes(event.event_notes as string);
       setStatementNotes(event.statement_notes as string);
@@ -403,7 +414,7 @@ export function EventForm({
                       if (!isNaN(hours)) {
                         const currentMinutes = duration % 1;
                         setDuration(
-                          Math.round((hours + currentMinutes) * 10) / 10
+                          Math.round((hours + currentMinutes) * 10) / 10,
                         );
                       }
                     }
