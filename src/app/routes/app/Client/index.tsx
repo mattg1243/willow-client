@@ -35,7 +35,7 @@ export function ClientRoute() {
 
   const totalBillings = events?.reduce(
     (prev, curr) => prev + (curr.charge ? curr.amount : 0),
-    0
+    0,
   );
 
   return (
@@ -43,7 +43,7 @@ export function ClientRoute() {
       {clientId && client ? (
         <ClientLayout title={`${client.fname} ${client.lname}`}>
           <VStack spaceY={4}>
-            <HStack marginLeft={12}>
+            <HStack>
               <strong>
                 <h3>{client.fname + " " + client.lname}</h3>
               </strong>

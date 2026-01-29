@@ -43,6 +43,26 @@ export function UpdateClient({ client }: { client: Client }) {
     }
   };
 
+  const handleArchive = async () => {
+    setLoading(true);
+    try {
+      await updateClientMutate({
+        ...clientState,
+        isarchived: !clientState.isarchived,
+      });
+      setClientState({ ...clientState, isarchived: !clientState.isarchived });
+      toaster.create({
+        type: "success",
+        title: `Client has been ${clientState.isarchived ? "unarchived." : "archived"}`,
+      });
+      setOpen(false);
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
@@ -130,6 +150,13 @@ export function UpdateClient({ client }: { client: Client }) {
             }}
             loading={loading}>
             Save client
+          </Button>
+          <Button
+            onClick={() => {
+              handleArchive();
+            }}
+            loading={loading}>
+            {`${clientState.isarchived ? "Unarchive" : "Archive"} client`}
           </Button>
           <DialogCloseTrigger />
         </DialogFooter>
