@@ -53,6 +53,13 @@ type EventFormProps = {
   onClose?: () => void;
 };
 
+const getLocalDateString = (d: Date): string => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 export function EventForm({
   mode,
   clientId,
@@ -62,9 +69,14 @@ export function EventForm({
   onClose,
 }: EventFormProps) {
   const [open, setOpen] = useState<boolean>(isOpen);
+  const initialDateString =
+    mode === "update" && event
+      ? new Date(event.date).toISOString().split("T")[0]
+      : getLocalDateString(new Date());
   const [date, setDate] = useState<Date>(
-    mode === "update" && event ? new Date(event.date) : new Date(),
+    new Date(`${initialDateString}T00:00:00.000Z`),
   );
+  const [dateString, setDateString] = useState<string>(initialDateString);
   const [duration, setDuration] = useState<number>(
     mode === "update" && event ? (event.duration as number) : 0,
   );
@@ -132,7 +144,9 @@ export function EventForm({
   };
 
   const clearInput = () => {
-    setDate(new Date());
+    const today = getLocalDateString(new Date());
+    setDateString(today);
+    setDate(new Date(`${today}T00:00:00.000Z`));
     setDuration(0);
     setEventTypeId(undefined);
     setRate(clientRate);
@@ -205,6 +219,7 @@ export function EventForm({
         title: "Event updated successfully.",
       });
       setOpen(false);
+      onClose?.();
     } catch (err: any) {
       console.error(err);
       toaster.create({ title: "Error updating event: " + err.message || err });
@@ -280,7 +295,9 @@ export function EventForm({
   // Sync with event prop when in update mode
   useEffect(() => {
     if (mode === "update" && event) {
-      setDate(new Date(event.date));
+      const ds = new Date(event.date).toISOString().split("T")[0];
+      setDateString(ds);
+      setDate(new Date(`${ds}T00:00:00.000Z`));
       setDuration(event.duration as number);
       setEventTypeId(event.event_type_id);
       setPaymentTypeId(
@@ -296,10 +313,10 @@ export function EventForm({
     }
   }, [mode, event]);
 
-  // Sync open state with isOpen prop
+  // Sync open state with isOpen prop or when the target event changes
   useEffect(() => {
     setOpen(isOpen);
-  }, [isOpen]);
+  }, [isOpen, event?.id]);
 
   return (
     <DialogRoot
@@ -392,8 +409,17 @@ export function EventForm({
           <Field label="Date">
             <Input
               type="date"
-              value={date.toISOString().split("T")[0]}
-              onChange={(e) => setDate(new Date(e.target.value))}
+              value={dateString}
+              onChange={(e) => {
+                const val = e.target.value;
+                setDateString(val);
+                if (val.length === 10) {
+                  const parsed = new Date(`${val}T00:00:00.000Z`);
+                  if (!isNaN(parsed.getTime())) {
+                    setDate(parsed);
+                  }
+                }
+              }}
             />
           </Field>
           <Field label="Duration">
@@ -421,7 +447,11 @@ export function EventForm({
                   }}
                 />
               </InputGroup>
-              <MinuteSelect duration={duration} onChange={setDuration} />
+              <MinuteSelect
+                disabled={isPayment()}
+                duration={duration}
+                onChange={setDuration}
+              />
             </HStack>
           </Field>
           <Field
@@ -540,10 +570,13 @@ export function EventForm({
 function MinuteSelect({
   duration,
   onChange,
+  disabled,
 }: {
   duration: number;
   onChange: (n: number) => void;
+  disabled?: boolean;
 }) {
+  const minuteValue = String(Math.round((duration % 1) * 10) / 10);
   return (
     <select
       style={{
@@ -554,9 +587,10 @@ function MinuteSelect({
         border: "1px solid #d1d5db",
         fontSize: "14px",
         backgroundColor: "white",
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
-      defaultValue="0"
+      disabled={disabled}
+      value={minuteValue}
       onChange={(e) => {
         const newDuration = Math.floor(duration) + parseFloat(e.target.value);
         onChange(Math.round(newDuration * 10) / 10);

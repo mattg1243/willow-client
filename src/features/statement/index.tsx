@@ -69,8 +69,8 @@ export function StatementBtn({
   const [open, setOpen] = useState<boolean>(false);
   const [selectedStatement, setSelectedStatement] = useState<number>(0);
   const [contactInfo, setContactInfo] = useState<UserContactInfo>();
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [startDate, setStartDate] = useState<string>();
+  const [endDate, setEndDate] = useState<string>();
   const [notes, setNotes] = useState<string>();
   const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,18 +93,20 @@ export function StatementBtn({
   const SelectedTemplateCover = BasicTemplateCover;
   const SelectedTemplatePage = BasicTemplatePage;
 
-  const resolvedEvents: Event[] = events.filter((e) => {
-    const eventDate = new Date(e.date);
-    if (startDate && endDate) {
-      return eventDate >= startDate && endDate >= eventDate;
-    } else if (startDate && !endDate) {
-      return eventDate >= startDate;
-    } else if (endDate && !startDate) {
-      return endDate >= eventDate;
-    } else {
-      return true;
-    }
-  });
+  const resolvedEvents: Event[] = events
+    .filter((e) => {
+      const eventDateStr = new Date(e.date).toISOString().split("T")[0];
+      if (startDate && endDate) {
+        return eventDateStr >= startDate && eventDateStr <= endDate;
+      } else if (startDate && !endDate) {
+        return eventDateStr >= startDate;
+      } else if (endDate && !startDate) {
+        return eventDateStr <= endDate;
+      } else {
+        return true;
+      }
+    })
+    .sort((a, b) => (new Date(a.date) >= new Date(b.date) ? 1 : -1));
 
   const eventChunks = chunkEvents(resolvedEvents);
 
@@ -115,7 +117,7 @@ export function StatementBtn({
   const validateDateRange = () => {
     if (startDate && endDate) {
       return startDate <= endDate;
-    } else if (startDate && startDate > new Date()) {
+    } else if (startDate && startDate > new Date().toISOString().split("T")[0]) {
       return false;
     } else {
       return true;
@@ -209,18 +211,14 @@ export function StatementBtn({
                 <Input
                   type="date"
                   onChange={(e) =>
-                    setStartDate(
-                      e.target.value ? new Date(e.target.value) : undefined
-                    )
+                    setStartDate(e.target.value || undefined)
                   }
                 />{" "}
                 -
                 <Input
                   type="date"
                   onChange={(e) =>
-                    setEndDate(
-                      e.target.value ? new Date(e.target.value) : undefined
-                    )
+                    setEndDate(e.target.value || undefined)
                   }
                 />
               </HStack>

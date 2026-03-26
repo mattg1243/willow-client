@@ -114,6 +114,7 @@ export function ClientTable({ clients }: ClientTableProps) {
       selection.map((c) => {
         queryClient.invalidateQueries({ queryKey: ["events", c] });
       });
+      setSelection([]);
     },
   });
 
@@ -121,6 +122,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     mutationFn: archiveClientsAction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });
+      setSelection([]);
     },
   });
 
@@ -179,7 +181,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                   height={50}
                   onClick={() => navigate(paths.app.client.getHref(client.id))}
                   style={{ cursor: "pointer" }}>
-                  <Table.Cell>
+                  <Table.Cell onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       top="1"
                       aria-label="Select client"

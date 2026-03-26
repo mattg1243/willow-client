@@ -1,17 +1,13 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   PaginationItems,
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination";
-import { deleteEvents } from "@/lib/api/events";
 import { Client, type Event } from "@/types/api";
 import { HStack, Spinner, Table, VStack } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { moneyToStr } from "../../../../utils/money";
-import { EventsTableActionBar } from "./ActionBar";
 import { EventForm } from "./EventForm";
 import { FilterBtn, FilterOptions } from "./FilterBtn";
 import { SortButton, SortByOptions, SortByOrder } from "./SortButton";
@@ -26,14 +22,11 @@ export type EventsTableProps = {
 
 export function EventsTable({ client, events, loading }: EventsTableProps) {
   const [page, setPage] = useState<number>(1);
-  const [selection, setSelection] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortByOptions>("created_at");
   const [order, setOrder] = useState<SortByOrder>("asc");
   const [filter, setFilter] = useState<FilterOptions>("All");
   const [filteredEvents, setFilteredEvents] = useState<Event[]>(events || []);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
-
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (events) {
@@ -63,28 +56,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
   const visibleEvents = filteredEvents
     ? filteredEvents.slice(startRange, endRange)
     : [];
-
-  const hasSelection = selection.length > 0;
-
-  const deleteEventsAction = async () => {
-    try {
-      if (selection.length > 0) {
-        await deleteEvents(selection, client.id);
-        setSelection([]);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const { mutateAsync: deleteEventsMutation } = useMutation({
-    mutationFn: deleteEventsAction,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events", client.id] });
-      queryClient.invalidateQueries({ queryKey: ["client", client.id] });
-      queryClient.invalidateQueries({ queryKey: ["payouts", client.id] });
-    },
-  });
 
   if (loading) {
     return <Spinner size={"xl"} color={"colors.primary.500"} />;
@@ -120,7 +91,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
               <Table.ColumnHeader>Event</Table.ColumnHeader>
               <Table.ColumnHeader>Time</Table.ColumnHeader>
               <Table.ColumnHeader>Amount</Table.ColumnHeader>
-              <Table.ColumnHeader>Select</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -140,21 +110,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                       {event.duration === 0 ? "" : event.duration}
                     </Table.Cell>
                     <Table.Cell>{moneyToStr(event.amount)}</Table.Cell>
-                    <Table.Cell onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        top="1"
-                        checked={selection.includes(event.id)}
-                        onCheckedChange={(changes) => {
-                          setSelection((prev) =>
-                            changes.checked
-                              ? [...prev, event.id]
-                              : selection.filter(
-                                  (eventId) => eventId !== event.id
-                                )
-                          );
-                        }}
-                      />
-                    </Table.Cell>
                   </Table.Row>
                 ))
               : null}
@@ -175,14 +130,6 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
             <PaginationNextTrigger />
           </HStack>
         </PaginationRoot>
-        <EventsTableActionBar
-          open={hasSelection}
-          selectionLength={selection.length}
-          clientId={client.id}
-          onDelete={async () => {
-            deleteEventsMutation();
-          }}
-        />
       </VStack>
       {editingEvent && (
         <EventForm
