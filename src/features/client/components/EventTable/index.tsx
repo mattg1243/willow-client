@@ -103,7 +103,7 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                     style={{ cursor: 'pointer' }}
                   >
                     <Table.Cell>
-                      {new Date(event.date).toLocaleDateString()}
+                      {new Date(event.date).toLocaleDateString(undefined, { timeZone: 'UTC' })}
                     </Table.Cell>
                     <Table.Cell>{event.event_type_title}</Table.Cell>
                     <Table.Cell>

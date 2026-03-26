@@ -79,7 +79,7 @@ export function Payout({ payout }: { payout: MakePayoutRes | undefined }) {
           <List.Root marginTop={6}>
             {payout.events.map((e) => (
               <List.Item>
-                {e.event_type_title} on {new Date(e.date).toLocaleDateString()}{" "}
+                {e.event_type_title} on {new Date(e.date).toLocaleDateString(undefined, { timeZone: 'UTC' })}{" "}
                 for {moneyToStr(e.amount)}
               </List.Item>
             ))}

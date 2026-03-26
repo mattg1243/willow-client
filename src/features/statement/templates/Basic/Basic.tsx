@@ -85,7 +85,7 @@ export function BasicTemplateCover({
             {events.map((event) => (
               <tr key={event.id}>
                 <td className={styles.td} style={{ width: ".65in" }}>
-                  {new Date(event.date).toLocaleDateString()}
+                  {new Date(event.date).toLocaleDateString(undefined, { timeZone: 'UTC' })}
                 </td>
                 <td className={styles.td} style={{ width: "90mm" }}>
                   <strong>{`${event.event_type_title}`}</strong>

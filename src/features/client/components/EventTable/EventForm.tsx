@@ -127,12 +127,13 @@ export function EventForm({
   };
 
   const validateInput = (): boolean => {
-    if (isPayment() && amount && date && clientId && eventTypeId) {
+    const validDate = date instanceof Date && !isNaN(date.getTime());
+    if (isPayment() && amount && validDate && clientId && eventTypeId) {
       return true;
     } else if (
       !isPayment() &&
       duration &&
-      date &&
+      validDate &&
       rate &&
       clientId &&
       eventTypeId
@@ -157,46 +158,44 @@ export function EventForm({
   };
 
   const submitAdd = async () => {
-    const data = {
-      event: {
-        client_id: clientId,
-        date: date.toISOString(),
-        duration: isPayment() ? 0 : duration,
-        event_type_id: eventTypeId as string,
-        payment_type_id: paymentTypeId,
-        event_notes: eventNotes,
-        statement_notes: statementNotes,
-        rate: isPayment() ? 0 : rate,
-        amount: isPayment() ? amount : rate * duration,
-      },
-    };
-    if (validateInput()) {
-      setLoading(true);
-
-      try {
-        await createEvent(data);
-        clearInput();
-        toaster.create({ title: "Event created", type: "success" });
-        setOpen(false);
-      } catch (err: any) {
-        console.error(err);
-        toaster.create({
-          title: "Error creating event: " + err?.message || err,
-          type: "error",
-        });
-      } finally {
-        setLoading(false);
-      }
-    } else {
+    if (!validateInput()) {
       toaster.create({
         title: "Missing required fields: ",
         type: "error",
       });
+      return;
+    }
+    setLoading(true);
+    try {
+      await createEvent({
+        event: {
+          client_id: clientId,
+          date: date.toISOString(),
+          duration: isPayment() ? 0 : duration,
+          event_type_id: eventTypeId as string,
+          payment_type_id: paymentTypeId,
+          event_notes: eventNotes,
+          statement_notes: statementNotes,
+          rate: isPayment() ? 0 : rate,
+          amount: isPayment() ? amount : rate * duration,
+        },
+      });
+      clearInput();
+      toaster.create({ title: "Event created", type: "success" });
+      setOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      toaster.create({
+        title: "Error creating event: " + err?.message || err,
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   const submitUpdate = async () => {
-    if (!event) return;
+    if (!event || !validateInput()) return;
 
     setLoading(true);
     try {
@@ -413,12 +412,7 @@ export function EventForm({
               onChange={(e) => {
                 const val = e.target.value;
                 setDateString(val);
-                if (val.length === 10) {
-                  const parsed = new Date(`${val}T00:00:00.000Z`);
-                  if (!isNaN(parsed.getTime())) {
-                    setDate(parsed);
-                  }
-                }
+                setDate(new Date(val ? `${val}T00:00:00.000Z` : "invalid"));
               }}
             />
           </Field>
