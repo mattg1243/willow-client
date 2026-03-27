@@ -139,7 +139,7 @@ export function BasicTemplatePage({ events }: { events: Event[] }) {
             {events.map((event) => (
               <tr key={event.id}>
                 <td className={styles.td} style={{ width: "40mm" }}>
-                  {new Date(event.date).toDateString()}
+                  {new Date(event.date).toLocaleDateString(undefined, { timeZone: 'UTC' })}
                 </td>
                 <td className={styles.td} style={{ width: "90mm" }}>
                   <strong>{event.event_type_title}</strong>

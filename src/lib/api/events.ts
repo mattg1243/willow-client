@@ -8,6 +8,7 @@ export const createEventSchema = z.object({
     date: z.string().min(1, "Date is required"),
     duration: z.number().min(0, "Duration is required"),
     event_type_id: z.string().min(1, "Event Type ID is required"),
+    payment_type_id: z.number().nullable().optional(),
     event_notes: z.string(),
     statement_notes: z.string(),
     rate: z.number().optional(),
