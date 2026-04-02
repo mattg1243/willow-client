@@ -23,7 +23,7 @@ export type EventsTableProps = {
 export function EventsTable({ client, events, loading }: EventsTableProps) {
   const [page, setPage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<SortByOptions>("created_at");
-  const [order, setOrder] = useState<SortByOrder>("asc");
+  const [order, setOrder] = useState<SortByOrder>("desc");
   const [filter, setFilter] = useState<FilterOptions>("All");
   const [filteredEvents, setFilteredEvents] = useState<Event[]>(events || []);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
@@ -35,17 +35,15 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
           ? events
           : events.filter((e) => e.charge === (filter === "Charge"));
 
+      const sortKey = sortBy === "created_at" ? "date" : sortBy;
+      const dir = order === "asc" ? 1 : -1;
       const sortFn = (a: Event, b: Event): number => {
-        if (a[sortBy] < b[sortBy]) {
-          return -1;
-        } else if (a[sortBy] > b[sortBy]) {
-          return 1;
-        } else {
-          return 0;
-        }
+        if (a[sortKey] < b[sortKey]) return -1 * dir;
+        if (a[sortKey] > b[sortKey]) return 1 * dir;
+        return 0;
       };
-      filtered.sort(sortFn);
-      setFilteredEvents(filtered);
+      const sorted = [...filtered].sort(sortFn);
+      setFilteredEvents(sorted);
       setPage(1);
     }
   }, [sortBy, order, filter, events]);
@@ -71,11 +69,7 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
             order={order}
             onOrderChange={setOrder}
           />
-          <EventForm
-            mode="add"
-            clientId={client.id}
-            clientRate={client.rate}
-          />
+          <EventForm mode="add" clientId={client.id} clientRate={client.rate} />
           <FilterBtn filter={filter} setFilter={setFilter} />
         </HStack>
         <Table.Root
@@ -100,10 +94,11 @@ export function EventsTable({ client, events, loading }: EventsTableProps) {
                     key={event.id}
                     height={50}
                     onClick={() => setEditingEvent(event)}
-                    style={{ cursor: 'pointer' }}
-                  >
+                    style={{ cursor: "pointer" }}>
                     <Table.Cell>
-                      {new Date(event.date).toLocaleDateString(undefined, { timeZone: 'UTC' })}
+                      {new Date(event.date).toLocaleDateString(undefined, {
+                        timeZone: "UTC",
+                      })}
                     </Table.Cell>
                     <Table.Cell>{event.event_type_title}</Table.Cell>
                     <Table.Cell>
