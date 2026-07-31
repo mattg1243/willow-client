@@ -94,7 +94,11 @@ export function ClientRoute() {
                   }>
                   <h4>Payouts</h4>
                 </Button>
-                <StatementBtn events={events || []} client={client} />
+                <StatementBtn
+                  events={events || []}
+                  client={client}
+                  payout={payout}
+                />
               </VStack>
             </HStack>
             <EventsTable

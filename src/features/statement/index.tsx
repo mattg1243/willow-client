@@ -14,9 +14,11 @@ import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
 import { getUserContactInfo } from "@/lib/api/user";
 import { useUser } from "@/lib/auth";
+import { MakePayoutRes } from "@/lib/payouts";
 import { system } from "@/theme";
 import { Client, Event, UserContactInfo } from "@/types/api";
-import { HStack, Input, SimpleGrid, Textarea } from "@chakra-ui/react";
+import { moneyToStr } from "@/utils/money";
+import { HStack, Input, SimpleGrid, Textarea, VStack } from "@chakra-ui/react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { DollarSign } from "lucide-react";
@@ -62,9 +64,11 @@ const statementTemplates: Array<{
 export function StatementBtn({
   events,
   client,
+  payout,
 }: {
   events: Event[];
   client: Client;
+  payout?: MakePayoutRes;
 }) {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedStatement, setSelectedStatement] = useState<number>(0);
@@ -113,6 +117,11 @@ export function StatementBtn({
   const retainerBalance = events[events.length - 1]
     ? events[events.length - 1].running_balance
     : 0;
+
+  const totalBillings = events.reduce(
+    (prev, curr) => prev + (curr.charge ? curr.amount : 0),
+    0,
+  );
 
   const validateDateRange = () => {
     if (startDate && endDate) {
@@ -188,6 +197,37 @@ export function StatementBtn({
         <DialogContent ref={contentRef}>
           <DialogHeader>Create statement</DialogHeader>
           <DialogBody spaceY={8}>
+            <strong>
+              <h3 style={{ textAlign: "center" }}>
+                {client.fname + " " + client.lname}
+              </h3>
+            </strong>
+            <SimpleGrid
+              columns={3}
+              gap={4}
+              padding={3}
+              borderWidth={1}
+              borderColor="border"
+              borderRadius="md">
+              <VStack alignItems="flex-start" gap={0}>
+                <span style={{ fontSize: 12, opacity: 0.7 }}>
+                  Retainer Balance
+                </span>
+                <strong>{moneyToStr(client.balance)}</strong>
+              </VStack>
+              <VStack alignItems="flex-start" gap={0}>
+                <span style={{ fontSize: 12, opacity: 0.7 }}>
+                  Available Payout
+                </span>
+                <strong>{moneyToStr(payout?.payout || 0)}</strong>
+              </VStack>
+              <VStack alignItems="flex-start" gap={0}>
+                <span style={{ fontSize: 12, opacity: 0.7 }}>
+                  Total Billings
+                </span>
+                <strong>{moneyToStr(totalBillings)}</strong>
+              </VStack>
+            </SimpleGrid>
             <SimpleGrid minChildWidth={200} gap={4}>
               {statementTemplates.map((t, i) => {
                 return (
